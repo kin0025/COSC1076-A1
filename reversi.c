@@ -19,9 +19,19 @@ int main(void)
     score scrboard[MAX_SCORES];
     struct player human, computer, *winner = NULL;
     /* initialise the scoreboard */
-
+    
     /* in a loop: display the main menu */
+    do{
+        printf("Welcome to Reversi!\n");
+        printf("================ \n");
+        printf("Select and option: \n");
+        printf("1. Play a game\n");
+        printf("2. Display High Scores\n");
+        printf("3. Quit the program\n");
+        printf("Please enter your choice:");
 
+    }while(&run == 0);
+    
     /* get the user's selection from the main menu */
 
     /* perform the requested task */
