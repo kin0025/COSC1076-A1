@@ -19,12 +19,12 @@
  * for a game
  */
 
-/* what are the attributes of a player? They have a score, a token (either BLUE
+/* what are the attributes of a player? They have a name, a token (either BLUE
  * or RED), and a score
  */
 struct player
 {
-    char name[NAMELEN + 1];
+    char name[NAMELEN + EXTRACHARS];
     enum cell token;
     unsigned score;
 };

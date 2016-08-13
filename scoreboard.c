@@ -16,6 +16,12 @@
  **/
 void init_scoreboard(score scores[MAX_SCORES])
 {
+    int i;
+    for(i=0; i < MAX_SCORES; i++){
+    score s = 0;
+        scores[i] = s;
+
+    }
 }
 
 
@@ -25,7 +31,7 @@ void init_scoreboard(score scores[MAX_SCORES])
  **/
 BOOLEAN add_to_scoreboard(score scores[MAX_SCORES], struct player * winner)
 {
-
+    return TRUE;
 }
 
 /**
@@ -34,5 +40,5 @@ BOOLEAN add_to_scoreboard(score scores[MAX_SCORES], struct player * winner)
  **/
 void display_scores(score scores[MAX_SCORES])
 {
-
+     
 }

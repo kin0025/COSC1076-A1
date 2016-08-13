@@ -9,6 +9,13 @@
  **********************************************************************/
 
 #include "utility.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+#define BASE 10
+#define ERROR_VALUE -1
+#define ODD_NUM 2
+
 
 /**
  * function required to be used when clearing the buffer. It simply reads
@@ -22,4 +29,39 @@ void read_rest_of_line(void)
     while(ch = getc(stdin), ch != EOF && ch != NEWLINE)
         ;
     clearerr(stdin);
+}
+
+
+
+int read_int(void)
+{
+    char buffer[LINELEN + EXTRACHARS];
+    int output;
+    char* ptr = NULL;
+
+    fgets(buffer,LINELEN,stdin);
+
+    output = (int)strtol(buffer,&ptr,BASE);    
+
+    if( output == -1 || ptr == buffer){
+         printf("ERROR");
+         return ERROR_VALUE;
+    }
+
+    return *output;
+}
+
+char* read_string(int length)
+{
+    char buffer[length + EXTRACHARS];
+    fgets(buffer,length,stdin);
+
+    return &buffer;
+}
+
+BOOLEAN isEven(int input){
+    if(input % ODD_NUM != 0){
+        return TRUE;
+    }else
+        return FALSE;
 }

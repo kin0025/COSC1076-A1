@@ -13,4 +13,11 @@
 #define NEWLINE '\n'
 
 void read_rest_of_line(void);
+
+int read_int(void);
+
+char* read_string(void);
+
+BOOLEAN isEven(int input);
+
 #endif /* ifndef UTILITY_H */

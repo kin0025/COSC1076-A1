@@ -36,6 +36,36 @@ struct player *play_game(struct player *first, struct player *second) {
     game_board board;
     enum cell token;
     struct player *current, *other, *winner;
+    bool quitting;
+
+    init_first_player(first, BLUE);
+    init_second_player(second, RED);
+    init_game_board(board);
+
+    current = &first;
+    other = &second;
+
+    if (other->token == RED) {
+        swap_players();
+    }
+    do {
+        display_board(board, current, other);
+        make_move(current, board);
+
+        swap_players(current, other);
+        //Get quitting input
+        if (input == "quit") {
+            quitting = TRUE;
+        }
+    } while (!quitting);
+
+    if (first->score >= second->score) {
+        winner = &first;
+    } else {
+        winner = &second;
+    }
+
+    return winner;
 }
 
 /**
@@ -44,10 +74,18 @@ struct player *play_game(struct player *first, struct player *second) {
  * whether there are any pieces that can be captured. If there are no pieces
  * that can be captured in any direction, it is an invalid move.
  **/
-BOOLEAN apply_move(game_board board, unsigned y, unsigned x,
-                   enum cell player_token) {
-    enum direction dir;
+BOOLEAN apply_move(game_board board, unsigned y, unsigned x, enum cell player_token) {
+    enum direction *dir = {NORTH,SOUTH,EAST,WEST,NORTH_EAST,NORTH_WEST,SOUTH_EAST,SOUTH_WEST}, *current_dir = NULL;
     unsigned captured_pieces = 0;
+    int i;
+    int * examined_position[2]={x,y};
+    bool more_squares = true;
+    for(i=0;i<NUM_DIRS;i++){
+        current_dir = dir[i];
+        do{
+
+        }while(more_squares);
+    }
 }
 
 /**
@@ -55,6 +93,14 @@ BOOLEAN apply_move(game_board board, unsigned y, unsigned x,
  * specified on the game_board.
  **/
 unsigned game_score(game_board board, enum cell player_token) {
+    int x, y, total = 0;
+    for (x = 0; x < BOARD_WIDTH; x++) {
+        for (y = 0; y < BOARD_HEIGHT; y++) {
+            if (board[y][x] == player_token) {
+                total++;
+            }
+        }
+    }
 }
 
 /**
@@ -62,4 +108,8 @@ unsigned game_score(game_board board, enum cell player_token) {
  * pointer that originally contained the second player and vice versa.
  **/
 void swap_players(struct player **first, struct player **second) {
+    player *temp;
+    temp = first;
+    first = second;
+    second = temp;
 }

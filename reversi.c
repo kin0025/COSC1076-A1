@@ -18,6 +18,7 @@ int main(void)
 {
     score scrboard[MAX_SCORES];
     struct player human, computer, *winner = NULL;
+    int choice, run = TRUE;
     /* initialise the scoreboard */
     
     /* in a loop: display the main menu */
@@ -30,13 +31,27 @@ int main(void)
         printf("3. Quit the program\n");
         printf("Please enter your choice:");
 
-    }while(&run == 0);
-    
-    /* get the user's selection from the main menu */
+        /* get the user's selection from the main menu */
+        choice = read_int();
 
-    /* perform the requested task */
-            /* play a game and add the winner to the scoreboard */    
-        
+        /* perform the requested task */
+        switch(choice){
+            case -1: printf("Invalid choice");
+                break;
+                /* play a game and add the winner to the scoreboard */
+            case 1: winner = play_game(&human,&computer);
+                add_to_scoreboard(scrboard,winner);
+                break;
+            case 2: display_scores(scrboard);
+                break;
+            case 3: run = FALSE;
+                break;
+            default:printf("Invalid choice");
+                break;
+        }
+    }while(run == TRUE);
+
+
             /* display scores */
             /* quit the program */
     return EXIT_SUCCESS;
