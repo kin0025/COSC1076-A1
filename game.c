@@ -36,33 +36,33 @@ struct player *play_game(struct player *first, struct player *second) {
     game_board board;
     enum cell token;
     struct player *current, *other, *winner;
-    bool quitting;
-
-    init_first_player(first, BLUE);
-    init_second_player(second, RED);
+    BOOLEAN quitting;
+    srand(time(NULL));
+    init_first_player(first, &token);
+    init_second_player(second, first->token);
     init_game_board(board);
 
-    current = &first;
-    other = &second;
+    current = first;
+    other = second;
 
     if (other->token == RED) {
-        swap_players();
+        swap_players(current,other);
     }
     do {
         display_board(board, current, other);
         make_move(current, board);
 
         swap_players(current, other);
-        //Get quitting input
-        if (input == "quit") {
+        /*Get quitting input*/
+        /*if (input == "quit") {
             quitting = TRUE;
-        }
+        }*/
     } while (!quitting);
 
     if (first->score >= second->score) {
-        winner = &first;
+        winner = first;
     } else {
-        winner = &second;
+        winner = second;
     }
 
     return winner;
@@ -75,13 +75,13 @@ struct player *play_game(struct player *first, struct player *second) {
  * that can be captured in any direction, it is an invalid move.
  **/
 BOOLEAN apply_move(game_board board, unsigned y, unsigned x, enum cell player_token) {
-    enum direction *dir = {NORTH,SOUTH,EAST,WEST,NORTH_EAST,NORTH_WEST,SOUTH_EAST,SOUTH_WEST}, *current_dir = NULL;
+    enum direction dir[NUM_DIRS] = {NORTH,SOUTH,EAST,WEST,NORTH_EAST,NORTH_WEST,SOUTH_EAST,SOUTH_WEST}, *current_dir = NULL;
     unsigned captured_pieces = 0;
     int i;
     int * examined_position[2]={x,y};
-    bool more_squares = true;
+    BOOLEAN more_squares = TRUE;
     for(i=0;i<NUM_DIRS;i++){
-        current_dir = dir[i];
+        current_dir = &dir[i];
         do{
 
         }while(more_squares);
@@ -108,7 +108,7 @@ unsigned game_score(game_board board, enum cell player_token) {
  * pointer that originally contained the second player and vice versa.
  **/
 void swap_players(struct player **first, struct player **second) {
-    player *temp;
+    struct player **temp;
     temp = first;
     first = second;
     second = temp;

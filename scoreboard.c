@@ -9,6 +9,7 @@
  **********************************************************************/
 
 #include "scoreboard.h"
+#define INITIAL_SCORE 0
 
 /**
  * initalise the scoreboard so that the scores for each element of the array
@@ -17,9 +18,11 @@
 void init_scoreboard(score scores[MAX_SCORES])
 {
     int i;
+    struct player player1;
+    player1.score = INITIAL_SCORE;
     for(i=0; i < MAX_SCORES; i++){
-    score s = 0;
-        scores[i] = s;
+
+        scores[i] = player1;
 
     }
 }

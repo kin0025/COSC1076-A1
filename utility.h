@@ -12,11 +12,16 @@
 /* newline character required for I/O functions */
 #define NEWLINE '\n'
 
+
+#define ERROR_VALUE -1
+#define ODD_NUM 2
+
+
 void read_rest_of_line(void);
 
 int read_int(void);
 
-char* read_string(void);
+char* read_game_input(void);
 
 BOOLEAN isEven(int input);
 

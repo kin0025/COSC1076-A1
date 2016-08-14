@@ -12,9 +12,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define BASE 10
-#define ERROR_VALUE -1
-#define ODD_NUM 2
 
 
 /**
@@ -48,13 +45,13 @@ int read_int(void)
          return ERROR_VALUE;
     }
 
-    return *output;
+    return output;
 }
 
-char* read_string(int length)
+char*read_game_input(void)
 {
-    char buffer[length + EXTRACHARS];
-    fgets(buffer,length,stdin);
+    char *buffer[LINELEN + EXTRACHARS];
+    fgets(*buffer,LINELEN,stdin);
 
     return &buffer;
 }

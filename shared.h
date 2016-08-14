@@ -28,6 +28,13 @@ typedef enum
  */
 #define NUM_COLORS 2
 
+
+#define NULL_TERMINATOR "\n"
+
+#define BASE 10
+
+#define NUM_DIMS 2
+
 /* what values could be contained in a cell on the board? */
 enum cell
 {
@@ -38,4 +45,5 @@ enum cell
 #define COLOR_RED     "\33[31m"
 #define COLOR_BLUE    "\33[34m"
 #define COLOR_RESET   "\33[0m"
+#define MAX_COLOR_LENGTH 7
 #endif /* defined SHARED_H */

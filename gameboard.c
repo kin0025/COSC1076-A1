@@ -10,10 +10,12 @@
  **********************************************************************/
 #include "gameboard.h"
 #include "player.h"
+#include "shared.h"
 
 #define CENTRE_SIZE 2
-#define DISPLAY_WIDTH BOARD_WIDTH+INDEX_WIDTH
-#define INDEX_WIDTH 2
+#define INDEX_WIDTH 3
+#define STARTING_ROW 1
+#define DISPLAY_WIDTH (BOARD_WIDTH * COLUMN_WIDTH) + INDEX_WIDTH
 
 /**
  * initialise the game board to be consistent with the screenshot provided
@@ -27,7 +29,7 @@ void init_game_board(game_board board) {
     int i, j, k;
 
 
-    //Set all values to 0
+    /*Set all values to 0*/
     for (i = 0; i < BOARD_HEIGHT; i++) {
         for (j = 0; j < BOARD_WIDTH; j++) {
             board[i][j] = BLANK;
@@ -54,37 +56,57 @@ void init_game_board(game_board board) {
  * assignment specification. 
  **/
 void display_board(game_board board, struct player *first, struct player *second) {
-    int i, j, row;
-    cell current;
-    //print top rows
-    for (i = 0; i < DISPLAY_WIDTH; i++) {
-        if (i < INDEX_WIDTH) {
-            printf(" ");
-        } else {
-            printf("%d ", i);
-        }
+    int i, j, k, row;
+    enum cell current;
+    /*print top rows*/
+    if(first->token == RED){
+        printf("Name: %s  Score: %4d  Token Color %s 0 %s",first->name,first->score,COLOR_RED,COLOR_RESET);
+    }else{
+        printf("Name: %s  Score: %4d  Token Color %s 0 %s",first->name,first->score,COLOR_BLUE,COLOR_RESET);
     }
-    for (i = 0; i < DISPLAY_WIDTH; i++) {
+    printf("\n");
+    for (i = 0; i <= DISPLAY_WIDTH; i++) {
         printf("=");
     }
-    //Print gameboard
+    printf("\n");
+
+    for (i = 0; i <= INDEX_WIDTH; i++) {
+        printf(" ");
+    }
+    for (i = 1; i <= BOARD_WIDTH; i++) {
+        printf(" %d  ", i);
+    }
+    printf("\n");
+    for (i = 0; i <= DISPLAY_WIDTH; i++) {
+        printf("=");
+    }
+
+    row = STARTING_ROW;
+    /*Print gameboard*/
     for (i = 0; i < BOARD_HEIGHT; i++) {
-        printf("%d|",i);
+        printf("\n %d |", row);
         for (j = 0; j < BOARD_WIDTH; j++) {
-            current = board[i][j];
+            current = board[j][i];
             if (current == RED) {
-                printf("%s 0 %s", COLOR_BLUE, COLOR_RESET);
+                printf("%s 0 %s|", COLOR_BLUE, COLOR_RESET);
             } else if (current == BLUE) {
-                printf("%s 0 %s", COLOR_BLUE, COLOR_RESET);
+                printf("%s 0 %s|", COLOR_BLUE, COLOR_RESET);
             } else {
-                printf(" ");
+                printf("   |");
             }
-            printf("|");
-        }
-        for(j = 0; j < DISPLAY_WIDTH; j++){
-            printf("-");
         }
         printf("\n");
+        for (k = 0; k <= DISPLAY_WIDTH; k++) {
+            printf("-");
+        }
+
+        row++;
     }
+    printf("\n");
+    for (i = 0; i <= DISPLAY_WIDTH; i++) {
+        printf("=");
+    }
+    printf("\n");
+
 }
 

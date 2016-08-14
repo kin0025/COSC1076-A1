@@ -23,23 +23,34 @@
  * test the value of token and assign the opposite color to the second player.
  **/
 BOOLEAN init_first_player(struct player *first, enum cell *token) {
-    char *name[NAMELEN + EXTRACHARS]="Player One";
+    int r = rand() % 2;
+    strcpy(first->name, "Player 1");
+    printf("Please enter a name for player 1\n");
+
+    fgets(first->name,NAMELEN,stdin);
+    first->name[strlen(first->name)-1]='\0';
 
     first->score = INITIAL_SCORE;
-    first->name = name;
-    if (rand() >= 0) {
-        token = BLUE;
+    if (r >= 0) {
+        *token = BLUE;
     } else {
-        token = RED;
+        *token = RED;
     }
-    first->token = token;
+    first->token = *token;
 
-    first->name = read_string();
+
 }
 
 BOOLEAN init_second_player(struct player *second, enum cell token) {
+
+    strcpy(second->name, "Player 2");
+    printf("Please enter a name for player 2\n");
+
+
+    fgets(second->name,NAMELEN,stdin);
+    second->name[strlen(second->name)-1]='\0';
+
     second->score = INITIAL_SCORE;
-    second->name = "Player One";
     if (token == RED) {
         token = BLUE;
     } else {
@@ -47,7 +58,6 @@ BOOLEAN init_second_player(struct player *second, enum cell token) {
     }
     second->token = token;
 
-    second->name->read_string();
 }
 
 /**
@@ -60,15 +70,21 @@ BOOLEAN init_second_player(struct player *second, enum cell token) {
  **/
 BOOLEAN make_move(struct player *human, game_board board) {
     char *input = NULL, *token = NULL;
-    int x[], z;
+    int x[NUM_DIMS], z;
+    int output;
+    char* ptr = NULL;
     BOOLEAN run;
+    printf("It is %s's turn",human->name);
     printf("Enter a set of values in the format x , y where you want to place your piece");
-    input = read_string();
+
+    input = read_game_input();
     token = strtok(input, DELIMS);
+
+
     z = 0;
     while (run == TRUE) {
-        while (token != null) {
-            x[z] = (int) strtol(token);
+        while (token != NULL) {
+            x[z] = (int) strtol(token,&ptr,BASE);
             z++;
             token = strtok(NULL, DELIMS);
         }
