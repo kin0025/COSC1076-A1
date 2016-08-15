@@ -14,15 +14,14 @@
  * the hear of the program. The main() function in particular should 
  * manage the main menu for the program.
  **/
-int main(void)
-{
+int main(void) {
     score scrboard[MAX_SCORES];
     struct player human, computer, *winner = NULL;
     int choice, run = TRUE;
     /* initialise the scoreboard */
-    
+
     /* in a loop: display the main menu */
-    do{
+    do {
         printf("Welcome to Reversi!\n");
         printf("================ \n");
         printf("Select and option: \n");
@@ -35,25 +34,32 @@ int main(void)
         choice = read_int();
 
         /* perform the requested task */
-        switch(choice){
-            case -1: printf("Invalid choice");
+        switch (choice) {
+            case -1:
+                printf("Invalid choice");
                 break;
                 /* play a game and add the winner to the scoreboard */
-            case 1: winner = play_game(&human,&computer);
-                add_to_scoreboard(scrboard,winner);
+            case 1:
+                winner = play_game(&human, &computer);
+                if (winner != NULL) {
+                    add_to_scoreboard(scrboard, winner);
+                }
                 break;
-            case 2: display_scores(scrboard);
+            case 2:
+                display_scores(scrboard);
                 break;
-            case 3: run = FALSE;
+            case 3:
+                run = FALSE;
                 break;
-            default:printf("Invalid choice");
+            default:
+                printf("Invalid choice\n");
                 break;
         }
-    }while(run == TRUE);
+    } while (run == TRUE);
 
 
-            /* display scores */
-            /* quit the program */
+    /* display scores */
+    /* quit the program */
     return EXIT_SUCCESS;
 }
 

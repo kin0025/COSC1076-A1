@@ -39,34 +39,43 @@ struct player *play_game(struct player *first, struct player *second) {
     BOOLEAN quitting;
     srand(time(NULL));
 
-    if (init_first_player(first, &token) || init_second_player(second, first->token)) {
+    if (!init_first_player(first, &token) || !init_second_player(second, first->token)) {
         printf("Quitting Game and returning to menu \n \n");
         return NULL;
     }
 
     init_game_board(board);
-
+    first->score = game_score(board,first->token);
+    second->score = game_score(board,second->token);
     current = first;
     other = second;
 
-    if (other->token == RED) {
+    if (current->token == BLUE) {
         swap_players(&current, &other);
     }
+
     while (!quitting) {
         display_board(board, current, other);
-        if (make_move(current, board)) {
+        if (!make_move(current, board)) {
             printf("Quitting Game and returning to menu \n \n");
             quitting = TRUE;
         }
 
         swap_players(&current, &other);
-
+        first->score = game_score(board,first->token);
+        second->score = game_score(board,second->token);
     }
+    first->score = game_score(board,first->token);
+    second->score = game_score(board,second->token);
 
-    if (first->score >= second->score) {
+
+    if (first->score > second->score) {
         winner = first;
-    } else {
+    }else if(second->score > first->score){
         winner = second;
+    }
+    else {
+        winner = NULL;
     }
 
     return winner;
@@ -86,7 +95,6 @@ BOOLEAN apply_move(game_board board, unsigned y, unsigned x, enum cell player_to
     int adder_amount[2];
     BOOLEAN more_squares = TRUE;
     enum cell other_token;
-
     /* Moved to work with arrays */
     x--;
     y--;
@@ -137,8 +145,10 @@ BOOLEAN apply_move(game_board board, unsigned y, unsigned x, enum cell player_to
                 adder_amount[0] = 0;
                 adder_amount[1] = 0;
         }
+
         if (x - adder_amount[0] < 0 || y - adder_amount[1] < 0) {
             more_squares = FALSE;
+            continue;
         } else {
             xa = x;
             ya = y;
@@ -153,17 +163,24 @@ BOOLEAN apply_move(game_board board, unsigned y, unsigned x, enum cell player_to
             ya += adder_amount[1];
 
             /* Iterate till we get to the first blank cell, or the first cell of same colour. */
+            printf("    Checking token %d %d:",xa,ya);
+            /*sleep(1);*/
             if (board[xa][ya] == other_token) {
                 more_squares = TRUE;
+                printf("Token of other player\n");
             } else if (board[xa][ya] == player_token) {
+                printf("Token of same player, pausing direction\n");
+                more_squares= FALSE;
                 /*capture the pieces! */
                 while (xa != x && ya != y) {
                     board[xa][ya] = player_token;
                     captured_pieces++;
+                    printf("Captured Piece %d %d\n",xa,ya);
                     xa -= adder_amount[0];
                     ya -= adder_amount[1];
                 }
             } else {
+                printf("Blank token, stopping movement\n");
                 more_squares = FALSE;
             }
         }
@@ -197,8 +214,8 @@ unsigned game_score(game_board board, enum cell player_token) {
  * pointer that originally contained the second player and vice versa.
  **/
 void swap_players(struct player **first, struct player **second) {
-    struct player **temp;
-    temp = first;
-    first = second;
-    second = temp;
+    struct player *temp;
+    temp = *first;
+    *first = *second;
+    *second = temp;
 }

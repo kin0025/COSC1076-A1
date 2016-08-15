@@ -21,7 +21,7 @@ void read_rest_of_line(void);
 
 int read_int(void);
 
-BOOLEAN read_game_input(char * buffer, int length,BOOLEAN);
+BOOLEAN read_game_input(char * buffer, int length);
 
 BOOLEAN isEven(int input);
 

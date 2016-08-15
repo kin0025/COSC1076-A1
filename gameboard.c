@@ -64,17 +64,21 @@ void display_board(game_board board, struct player *first, struct player *second
     /*print top rows*/
     printf("Other Player:\n");
     if(second->token == RED){
-        printf("Name: %s  Score: %4d  Token Color %s 0 %s\n",second->name,second->score,COLOR_RED,COLOR_RESET);
+        printf("Name: %-20s  Score: %4d  Token Color %s 0 %s\n",second->name,second->score,COLOR_RED,COLOR_RESET);
     }else{
-        printf("Name: %s  Score: %4d  Token Color %s 0 %s\n",second->name,second->score,COLOR_BLUE,COLOR_RESET);
+        printf("Name: %-20s  Score: %4d  Token Color %s 0 %s\n",second->name,second->score,COLOR_BLUE,COLOR_RESET);
     }
+    for (i = 0; i <= (DISPLAY_WIDTH + NAMELEN); i++) {
+        printf("=");
+    }
+    printf("\n");
     printf("Current Player:\n");
     if(first->token == RED){
-        printf("Name: %s  Score: %4d  Token Color %s 0 %s\n",first->name,first->score,COLOR_RED,COLOR_RESET);
+        printf("Name: %-20s  Score: %4d  Token Color %s 0 %s\n",first->name,first->score,COLOR_RED,COLOR_RESET);
     }else{
-        printf("Name: %s  Score: %4d  Token Color %s 0 %s\n",first->name,first->score,COLOR_BLUE,COLOR_RESET);
+        printf("Name: %-20s  Score: %4d  Token Color %s 0 %s\n",first->name,first->score,COLOR_BLUE,COLOR_RESET);
     }
-    for (i = 0; i <= DISPLAY_WIDTH; i++) {
+    for (i = 0; i <= (DISPLAY_WIDTH + NAMELEN); i++) {
         printf("=");
     }
     printf("\n");

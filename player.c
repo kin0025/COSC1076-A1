@@ -24,12 +24,10 @@
  **/
 BOOLEAN init_first_player(struct player *first, enum cell *token) {
     int r = rand() % 2;
-    printf("%d\n",r);
-    printf("%d",rand());
     strcpy(first->name, "Player 1");
-    printf("Please enter a name for player 1:");
+    printf("Please enter a name for player 1: ");
 
-    if (read_game_input(first->name, NAMELEN,TRUE)){
+    if (!read_game_input(first->name, NAMELEN)) {
         return FALSE;
     }
 
@@ -48,10 +46,10 @@ BOOLEAN init_first_player(struct player *first, enum cell *token) {
 BOOLEAN init_second_player(struct player *second, enum cell token) {
 
     strcpy(second->name, "Player 2");
-    printf("Please enter a name for player 2:");
+    printf("Please enter a name for player 2: ");
 
 
-    if (read_game_input(second->name, NAMELEN,TRUE)){
+    if (!read_game_input(second->name, NAMELEN)) {
         return FALSE;
     }
 
@@ -74,33 +72,36 @@ BOOLEAN init_second_player(struct player *second, enum cell token) {
  * calls the apply_move function to do the actual work of capturing pieces.
  **/
 BOOLEAN make_move(struct player *human, game_board board) {
-    char input[LINELEN+EXTRACHARS], *token = NULL;
+    char input[LINELEN + EXTRACHARS];
+    char *token = NULL;
     int x[NUM_DIMS], z;
-    char* ptr = NULL;
-    BOOLEAN run;
+    char *ptr = NULL;
+    BOOLEAN run = TRUE;
 
 
-    printf("It is %s's turn\n",human->name);
-    printf("Enter a set of values in the format x , y where you want to place your piece:\n");
-
-    read_game_input(input,LINELEN,TRUE);
-    token = strtok(input, DELIMS);
-
-
-    z = 0;
+    printf("It is %s's turn\n", human->name);
     while (run == TRUE) {
+        printf("Enter a set of values in the format x , y where you want to place your piece:\n");
+
+        if(!read_game_input(input, LINELEN)){
+            return FALSE;
+        }
+
+        token = strtok(input, DELIMS);
+        z = 0;
+
         while (token != NULL) {
-            x[z] = (int) strtol(token,&ptr,BASE);
+            x[z] = (int) strtol(token, &ptr, BASE);
             z++;
             token = strtok(NULL, DELIMS);
         }
-        if (z >= 2) {
+        if (z > 2) {
             printf("Extra co-ordinates provided, please try again.");
             run = TRUE;
         } else {
             run = FALSE;
         }
     }
-    while(!apply_move(board,x[0],x[1],human->token));
+    while (!apply_move(board, x[1], x[0], human->token));
     return TRUE;
 }
