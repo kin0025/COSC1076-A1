@@ -14,14 +14,14 @@
 
 
 #define ERROR_VALUE -1
-#define ODD_NUM 2
+#define EVEN_NUM 2
 
 
 void read_rest_of_line(void);
 
 int read_int(void);
 
-char* read_game_input(void);
+BOOLEAN read_game_input(char * buffer, int length,BOOLEAN);
 
 BOOLEAN isEven(int input);
 

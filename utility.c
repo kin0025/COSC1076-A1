@@ -11,6 +11,7 @@
 #include "utility.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 
 
@@ -48,16 +49,21 @@ int read_int(void)
     return output;
 }
 
-char*read_game_input(void)
+BOOLEAN read_game_input(char * buffer, int length, BOOLEAN removeReturn)
 {
-    char *buffer[LINELEN + EXTRACHARS];
-    fgets(*buffer,LINELEN,stdin);
+    BOOLEAN result = TRUE;
+    if(fgets(buffer,length,stdin) == NULL){
+                result = FALSE;
+    }
+    if(removeReturn){
+        buffer[strlen(buffer)-1] = NULL_TERMINATOR;
+    }
 
-    return &buffer;
+    return result;
 }
 
 BOOLEAN isEven(int input){
-    if(input % ODD_NUM != 0){
+    if(input % EVEN_NUM == 0){
         return TRUE;
     }else
         return FALSE;

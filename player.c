@@ -24,31 +24,36 @@
  **/
 BOOLEAN init_first_player(struct player *first, enum cell *token) {
     int r = rand() % 2;
+    printf("%d\n",r);
+    printf("%d",rand());
     strcpy(first->name, "Player 1");
-    printf("Please enter a name for player 1\n");
+    printf("Please enter a name for player 1:");
 
-    fgets(first->name,NAMELEN,stdin);
-    first->name[strlen(first->name)-1]='\0';
+    if (read_game_input(first->name, NAMELEN,TRUE)){
+        return FALSE;
+    }
+
 
     first->score = INITIAL_SCORE;
-    if (r >= 0) {
+    if (r > 0) {
         *token = BLUE;
     } else {
         *token = RED;
     }
     first->token = *token;
 
-
+    return TRUE;
 }
 
 BOOLEAN init_second_player(struct player *second, enum cell token) {
 
     strcpy(second->name, "Player 2");
-    printf("Please enter a name for player 2\n");
+    printf("Please enter a name for player 2:");
 
 
-    fgets(second->name,NAMELEN,stdin);
-    second->name[strlen(second->name)-1]='\0';
+    if (read_game_input(second->name, NAMELEN,TRUE)){
+        return FALSE;
+    }
 
     second->score = INITIAL_SCORE;
     if (token == RED) {
@@ -57,7 +62,7 @@ BOOLEAN init_second_player(struct player *second, enum cell token) {
         token = RED;
     }
     second->token = token;
-
+    return TRUE;
 }
 
 /**
@@ -69,15 +74,16 @@ BOOLEAN init_second_player(struct player *second, enum cell token) {
  * calls the apply_move function to do the actual work of capturing pieces.
  **/
 BOOLEAN make_move(struct player *human, game_board board) {
-    char *input = NULL, *token = NULL;
+    char input[LINELEN+EXTRACHARS], *token = NULL;
     int x[NUM_DIMS], z;
-    int output;
     char* ptr = NULL;
     BOOLEAN run;
-    printf("It is %s's turn",human->name);
-    printf("Enter a set of values in the format x , y where you want to place your piece");
 
-    input = read_game_input();
+
+    printf("It is %s's turn\n",human->name);
+    printf("Enter a set of values in the format x , y where you want to place your piece:\n");
+
+    read_game_input(input,LINELEN,TRUE);
     token = strtok(input, DELIMS);
 
 
@@ -95,5 +101,6 @@ BOOLEAN make_move(struct player *human, game_board board) {
             run = FALSE;
         }
     }
-    apply_move(board,x[1],x[2],human->token);
+    while(!apply_move(board,x[0],x[1],human->token));
+    return TRUE;
 }

@@ -38,26 +38,30 @@ struct player *play_game(struct player *first, struct player *second) {
     struct player *current, *other, *winner;
     BOOLEAN quitting;
     srand(time(NULL));
-    init_first_player(first, &token);
-    init_second_player(second, first->token);
+
+    if (init_first_player(first, &token) || init_second_player(second, first->token)) {
+        printf("Quitting Game and returning to menu \n \n");
+        return NULL;
+    }
+
     init_game_board(board);
 
     current = first;
     other = second;
 
     if (other->token == RED) {
-        swap_players(current,other);
+        swap_players(&current, &other);
     }
-    do {
+    while (!quitting) {
         display_board(board, current, other);
-        make_move(current, board);
-
-        swap_players(current, other);
-        /*Get quitting input*/
-        /*if (input == "quit") {
+        if (make_move(current, board)) {
+            printf("Quitting Game and returning to menu \n \n");
             quitting = TRUE;
-        }*/
-    } while (!quitting);
+        }
+
+        swap_players(&current, &other);
+
+    }
 
     if (first->score >= second->score) {
         winner = first;
@@ -75,16 +79,100 @@ struct player *play_game(struct player *first, struct player *second) {
  * that can be captured in any direction, it is an invalid move.
  **/
 BOOLEAN apply_move(game_board board, unsigned y, unsigned x, enum cell player_token) {
-    enum direction dir[NUM_DIRS] = {NORTH,SOUTH,EAST,WEST,NORTH_EAST,NORTH_WEST,SOUTH_EAST,SOUTH_WEST}, *current_dir = NULL;
+    enum direction dir[NUM_DIRS] = {NORTH, SOUTH, EAST, WEST, NORTH_EAST, NORTH_WEST, SOUTH_EAST,
+                                    SOUTH_WEST}, *current_dir = NULL;
     unsigned captured_pieces = 0;
-    int i;
-    int * examined_position[2]={x,y};
+    int i, xa, ya;
+    int adder_amount[2];
     BOOLEAN more_squares = TRUE;
-    for(i=0;i<NUM_DIRS;i++){
-        current_dir = &dir[i];
-        do{
+    enum cell other_token;
 
-        }while(more_squares);
+    /* Moved to work with arrays */
+    x--;
+    y--;
+
+    if (player_token == BLUE) {
+        other_token = RED;
+    } else {
+        other_token = BLUE;
+    }
+    /** Iterate through all possible directions **/
+    for (i = 0; i < NUM_DIRS; i++) {
+        more_squares = TRUE;
+        current_dir = &dir[i];
+        switch (*current_dir) {
+            case NORTH:
+                adder_amount[0] = 0;
+                adder_amount[1] = 1;
+                break;
+            case SOUTH:
+                adder_amount[0] = 0;
+                adder_amount[1] = -1;
+                break;
+            case EAST:
+                adder_amount[0] = 1;
+                adder_amount[1] = 0;
+                break;
+            case WEST:
+                adder_amount[0] = -1;
+                adder_amount[1] = 0;
+                break;
+            case NORTH_WEST:
+                adder_amount[0] = -1;
+                adder_amount[1] = 1;
+                break;
+            case NORTH_EAST:
+                adder_amount[0] = 1;
+                adder_amount[1] = 1;
+                break;
+            case SOUTH_WEST:
+                adder_amount[0] = -1;
+                adder_amount[1] = -1;
+                break;
+            case SOUTH_EAST:
+                adder_amount[0] = 1;
+                adder_amount[1] = -1;
+                break;
+            default:
+                adder_amount[0] = 0;
+                adder_amount[1] = 0;
+        }
+        if (x - adder_amount[0] < 0 || y - adder_amount[1] < 0) {
+            more_squares = FALSE;
+        } else {
+            xa = x;
+            ya = y;
+        }
+
+        while (more_squares) {
+            if ((xa + adder_amount[0] < 0) || (ya - adder_amount[1] < 0)) {
+                more_squares = FALSE;
+            }
+
+            xa += adder_amount[0];
+            ya += adder_amount[1];
+
+            /* Iterate till we get to the first blank cell, or the first cell of same colour. */
+            if (board[xa][ya] == other_token) {
+                more_squares = TRUE;
+            } else if (board[xa][ya] == player_token) {
+                /*capture the pieces! */
+                while (xa != x && ya != y) {
+                    board[xa][ya] = player_token;
+                    captured_pieces++;
+                    xa -= adder_amount[0];
+                    ya -= adder_amount[1];
+                }
+            } else {
+                more_squares = FALSE;
+            }
+        }
+    }
+
+    if (captured_pieces != 0) {
+        return TRUE;
+    } else {
+        return FALSE;
     }
 }
 
@@ -101,6 +189,7 @@ unsigned game_score(game_board board, enum cell player_token) {
             }
         }
     }
+    return total;
 }
 
 /**

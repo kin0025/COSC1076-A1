@@ -16,6 +16,7 @@
 #define INDEX_WIDTH 3
 #define STARTING_ROW 1
 #define DISPLAY_WIDTH (BOARD_WIDTH * COLUMN_WIDTH) + INDEX_WIDTH
+#define ARRAY_OFFSET 1
 
 /**
  * initialise the game board to be consistent with the screenshot provided
@@ -37,16 +38,18 @@ void init_game_board(game_board board) {
     }
 
     k = 0;
-    for (i = 0; i < CENTRE_SIZE; i++) {
+    for (i = BOARD_WIDTH/2; i < BOARD_WIDTH/2 + CENTRE_SIZE; i++) {
 
-        for (j = 0; j < CENTRE_SIZE; j += 2) {
-            if (isEven(k)) {
-                board[i][j] = RED;
+        for (j = BOARD_HEIGHT/2; j < BOARD_HEIGHT/2 + CENTRE_SIZE; j ++) {
+            if (isEven(k) == TRUE) {
+                board[i-ARRAY_OFFSET][j-ARRAY_OFFSET] = RED;
             } else {
-                board[i][j] = BLUE;
+                board[i-ARRAY_OFFSET][j-ARRAY_OFFSET] = BLUE;
             }
+            k++;
         }
         k++;
+
     }
 }
 
@@ -59,12 +62,18 @@ void display_board(game_board board, struct player *first, struct player *second
     int i, j, k, row;
     enum cell current;
     /*print top rows*/
-    if(first->token == RED){
-        printf("Name: %s  Score: %4d  Token Color %s 0 %s",first->name,first->score,COLOR_RED,COLOR_RESET);
+    printf("Other Player:\n");
+    if(second->token == RED){
+        printf("Name: %s  Score: %4d  Token Color %s 0 %s\n",second->name,second->score,COLOR_RED,COLOR_RESET);
     }else{
-        printf("Name: %s  Score: %4d  Token Color %s 0 %s",first->name,first->score,COLOR_BLUE,COLOR_RESET);
+        printf("Name: %s  Score: %4d  Token Color %s 0 %s\n",second->name,second->score,COLOR_BLUE,COLOR_RESET);
     }
-    printf("\n");
+    printf("Current Player:\n");
+    if(first->token == RED){
+        printf("Name: %s  Score: %4d  Token Color %s 0 %s\n",first->name,first->score,COLOR_RED,COLOR_RESET);
+    }else{
+        printf("Name: %s  Score: %4d  Token Color %s 0 %s\n",first->name,first->score,COLOR_BLUE,COLOR_RESET);
+    }
     for (i = 0; i <= DISPLAY_WIDTH; i++) {
         printf("=");
     }
@@ -82,13 +91,13 @@ void display_board(game_board board, struct player *first, struct player *second
     }
 
     row = STARTING_ROW;
-    /*Print gameboard*/
+    /*Print board*/
     for (i = 0; i < BOARD_HEIGHT; i++) {
         printf("\n %d |", row);
         for (j = 0; j < BOARD_WIDTH; j++) {
             current = board[j][i];
             if (current == RED) {
-                printf("%s 0 %s|", COLOR_BLUE, COLOR_RESET);
+                printf("%s 0 %s|", COLOR_RED, COLOR_RESET);
             } else if (current == BLUE) {
                 printf("%s 0 %s|", COLOR_BLUE, COLOR_RESET);
             } else {

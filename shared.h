@@ -29,7 +29,7 @@ typedef enum
 #define NUM_COLORS 2
 
 
-#define NULL_TERMINATOR "\n"
+#define NULL_TERMINATOR '\0'
 
 #define BASE 10
 
