@@ -105,6 +105,10 @@ BOOLEAN apply_move(game_board board, unsigned y, unsigned x, enum cell player_to
         other_token = BLUE;
     }
     /** Iterate through all possible directions **/
+    if(board[x][y] != BLANK){
+        return FALSE;
+    }
+
     for (i = 0; i < NUM_DIRS; i++) {
         more_squares = TRUE;
         current_dir = &dir[i];

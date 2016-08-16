@@ -74,39 +74,39 @@ BOOLEAN init_second_player(struct player *second, enum cell token) {
 BOOLEAN make_move(struct player *human, game_board board) {
     char input[LINELEN + EXTRACHARS];
     char *token = NULL;
-    int x[NUM_DIMS], z,runs = 0;
+    int x[NUM_DIMS] = {0, 0}, runs = 0,i;
     char *ptr = NULL;
+BOOLEAN run= TRUE;
 
-
-    if(human->token==BLUE){
-        printf("It is %s %s's %s turn:\n",COLOR_BLUE,human->name,COLOR_RESET);
-    }else{
-        printf("It is %s %s's %s turn\n",COLOR_RED,human->name,COLOR_RESET);
+    if (human->token == BLUE) {
+        printf("It is %s %s's %s turn:\n", COLOR_BLUE, human->name, COLOR_RESET);
+    } else {
+        printf("It is %s %s's %s turn\n", COLOR_RED, human->name, COLOR_RESET);
     }
     printf("Enter a set of values in the format x , y where you want to place your piece:\n");
 
-    do{
-        if(runs > 0){
-            printf("Invalid Move. Please try again\n:");
+    do {
+        if (runs > 0) {
+            printf("Invalid Move. Please try again:\n");
         }
-        if(!read_game_input(input, LINELEN)){
+        if (!read_game_input(input, LINELEN)) {
             return FALSE;
         }
 
         token = strtok(input, DELIMS);
-        z = 0;
-
-        while (token != NULL) {
-            x[z] = (int) strtol(token, &ptr, BASE);
-            z++;
+        for(i=0;i<NUM_DIMS;i++) {
+            x[i] = (int) strtol(token, &ptr, BASE);
             token = strtok(NULL, DELIMS);
         }
-        if (z > 2) {
-            printf("Extra co-ordinates provided, please try again.");
+        if (token != NULL) {
+            printf("Invalid co-ordinates provided, please try again.\n");
+            /* This will still pass us to the conditional, so we have to prevent the second statement from running */
+            run= FALSE;
             continue;
+        }else {
+            runs++;
+            run = TRUE;
         }
-        runs++;
-
-    }while(!apply_move(board, x[1], x[0], human->token));
+    } while (!(run && apply_move(board, x[1], x[0], human->token)));
     return TRUE;
 }

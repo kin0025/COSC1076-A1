@@ -35,6 +35,7 @@ typedef enum
 
 #define NUM_DIMS 2
 
+#define INDEX_OFFSET 1
 /* what values could be contained in a cell on the board? */
 enum cell
 {
