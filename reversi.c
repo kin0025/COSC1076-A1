@@ -22,7 +22,7 @@ int main(void) {
 
     /* in a loop: display the main menu */
     do {
-        printf("Welcome to Reversi!\n");
+        printf("\nWelcome to Reversi!\n");
         printf("================ \n");
         printf("Select and option: \n");
         printf("1. Play a game\n");
@@ -52,7 +52,7 @@ int main(void) {
                 run = FALSE;
                 break;
             default:
-                printf("Invalid choice\n");
+                printf("Invalid choice\n\n");
                 break;
         }
     } while (run == TRUE);

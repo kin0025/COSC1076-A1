@@ -90,7 +90,7 @@ struct player *play_game(struct player *first, struct player *second) {
 BOOLEAN apply_move(game_board board, unsigned y, unsigned x, enum cell player_token) {
     enum direction dir[NUM_DIRS] = {NORTH, SOUTH, EAST, WEST, NORTH_EAST, NORTH_WEST, SOUTH_EAST,
                                     SOUTH_WEST}, *current_dir = NULL;
-    unsigned captured_pieces = 0;
+    unsigned captured_pieces = 0, captured_dir = 0;
     int i, xa, ya;
     int adder_amount[2];
     BOOLEAN more_squares = TRUE;
@@ -108,18 +108,19 @@ BOOLEAN apply_move(game_board board, unsigned y, unsigned x, enum cell player_to
     for (i = 0; i < NUM_DIRS; i++) {
         more_squares = TRUE;
         current_dir = &dir[i];
+        captured_dir = 0;
         switch (*current_dir) {
             case NORTH:
                 adder_amount[0] = 0;
-                adder_amount[1] = 1;
-                break;
+                adder_amount[1] = -1;
+                 break;
             case SOUTH:
                 adder_amount[0] = 0;
-                adder_amount[1] = -1;
-                break;
+                adder_amount[1] = 1;break;
             case EAST:
                 adder_amount[0] = 1;
                 adder_amount[1] = 0;
+
                 break;
             case WEST:
                 adder_amount[0] = -1;
@@ -127,19 +128,19 @@ BOOLEAN apply_move(game_board board, unsigned y, unsigned x, enum cell player_to
                 break;
             case NORTH_WEST:
                 adder_amount[0] = -1;
-                adder_amount[1] = 1;
+                adder_amount[1] = -1;
                 break;
             case NORTH_EAST:
                 adder_amount[0] = 1;
-                adder_amount[1] = 1;
+                adder_amount[1] = -1;
                 break;
             case SOUTH_WEST:
                 adder_amount[0] = -1;
-                adder_amount[1] = -1;
+                adder_amount[1] = 1;
                 break;
             case SOUTH_EAST:
                 adder_amount[0] = 1;
-                adder_amount[1] = -1;
+                adder_amount[1] = 1;
                 break;
             default:
                 adder_amount[0] = 0;
@@ -155,32 +156,33 @@ BOOLEAN apply_move(game_board board, unsigned y, unsigned x, enum cell player_to
         }
 
         while (more_squares) {
-            if ((xa + adder_amount[0] < 0) || (ya - adder_amount[1] < 0)) {
-                more_squares = FALSE;
+            if ((xa + adder_amount[0] < 0) || (ya + adder_amount[1] < 0)) {
+                printf("Would have exceeded bounds, skipping operation %d %d\n",xa+adder_amount[0],ya+adder_amount[1]);
+                break;
             }
 
             xa += adder_amount[0];
             ya += adder_amount[1];
 
             /* Iterate till we get to the first blank cell, or the first cell of same colour. */
-            printf("    Checking token %d %d:",xa,ya);
-            /*sleep(1);*/
             if (board[xa][ya] == other_token) {
                 more_squares = TRUE;
-                printf("Token of other player\n");
             } else if (board[xa][ya] == player_token) {
-                printf("Token of same player, pausing direction\n");
                 more_squares= FALSE;
                 /*capture the pieces! */
-                while (xa != x && ya != y) {
+                xa -= adder_amount[0];
+                ya -= adder_amount[1];
+                while (xa != x || ya != y) {
                     board[xa][ya] = player_token;
                     captured_pieces++;
-                    printf("Captured Piece %d %d\n",xa,ya);
+                    captured_dir++;
                     xa -= adder_amount[0];
                     ya -= adder_amount[1];
+                    }
+                if(captured_dir > 0){
+                    board[x][y] = player_token;
                 }
             } else {
-                printf("Blank token, stopping movement\n");
                 more_squares = FALSE;
             }
         }

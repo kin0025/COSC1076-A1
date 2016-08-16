@@ -74,15 +74,21 @@ BOOLEAN init_second_player(struct player *second, enum cell token) {
 BOOLEAN make_move(struct player *human, game_board board) {
     char input[LINELEN + EXTRACHARS];
     char *token = NULL;
-    int x[NUM_DIMS], z;
+    int x[NUM_DIMS], z,runs = 0;
     char *ptr = NULL;
-    BOOLEAN run = TRUE;
 
 
-    printf("It is %s's turn\n", human->name);
-    while (run == TRUE) {
-        printf("Enter a set of values in the format x , y where you want to place your piece:\n");
+    if(human->token==BLUE){
+        printf("It is %s %s's %s turn:\n",COLOR_BLUE,human->name,COLOR_RESET);
+    }else{
+        printf("It is %s %s's %s turn\n",COLOR_RED,human->name,COLOR_RESET);
+    }
+    printf("Enter a set of values in the format x , y where you want to place your piece:\n");
 
+    do{
+        if(runs > 0){
+            printf("Invalid Move. Please try again\n:");
+        }
         if(!read_game_input(input, LINELEN)){
             return FALSE;
         }
@@ -97,11 +103,10 @@ BOOLEAN make_move(struct player *human, game_board board) {
         }
         if (z > 2) {
             printf("Extra co-ordinates provided, please try again.");
-            run = TRUE;
-        } else {
-            run = FALSE;
+            continue;
         }
-    }
-    while (!apply_move(board, x[1], x[0], human->token));
+        runs++;
+
+    }while(!apply_move(board, x[1], x[0], human->token));
     return TRUE;
 }

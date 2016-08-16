@@ -39,7 +39,6 @@ int read_int(void) {
     output = (int) strtol(buffer, &ptr, BASE);
 
     if (output == -1 || ptr == buffer) {
-        printf("ERROR : Input was not an integer \n");
         return ERROR_VALUE;
     }
 
