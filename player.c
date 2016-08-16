@@ -72,11 +72,11 @@ BOOLEAN init_second_player(struct player *second, enum cell token) {
  * calls the apply_move function to do the actual work of capturing pieces.
  **/
 BOOLEAN make_move(struct player *human, game_board board) {
-    char input[LINELEN + EXTRACHARS];
+    char input[COORDS_LEN + EXTRACHARS];
     char *token = NULL;
-    int x[NUM_DIMS] = {0, 0}, runs = 0,i;
+    int x[NUM_DIMS] = {0, 0}, runs = 0,z;
     char *ptr = NULL;
-BOOLEAN run= TRUE;
+    BOOLEAN run= TRUE;
 
     if (human->token == BLUE) {
         printf("It is %s %s's %s turn:\n", COLOR_BLUE, human->name, COLOR_RESET);
@@ -86,23 +86,26 @@ BOOLEAN run= TRUE;
     printf("Enter a set of values in the format x , y where you want to place your piece:\n");
 
     do {
-        if (runs > 0) {
+        if (runs > 0 && run == TRUE) {
             printf("Invalid Move. Please try again:\n");
         }
-        if (!read_game_input(input, LINELEN)) {
+
+        if (!read_game_input(input, COORDS_LEN)) {
             return FALSE;
         }
 
+
         token = strtok(input, DELIMS);
-        for(i=0;i<NUM_DIMS;i++) {
-            x[i] = (int) strtol(token, &ptr, BASE);
+        z = 0;
+        while (token != NULL) {
+            x[z] = (int)strtol(token, &ptr, BASE);
+            z++;
             token = strtok(NULL, DELIMS);
         }
-        if (token != NULL) {
+        if (z != 2) {
             printf("Invalid co-ordinates provided, please try again.\n");
             /* This will still pass us to the conditional, so we have to prevent the second statement from running */
-            run= FALSE;
-            continue;
+            run = FALSE;
         }else {
             runs++;
             run = TRUE;

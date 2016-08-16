@@ -48,7 +48,7 @@ int read_int(void) {
 BOOLEAN read_game_input(char *buffer, int length) {
     BOOLEAN overflow = FALSE;
    do {
-       if (fgets(buffer, length, stdin) == NULL) {
+       if (fgets(buffer, length + EXTRACHARS, stdin) == NULL) {
            return FALSE;
        }
 
@@ -56,14 +56,13 @@ BOOLEAN read_game_input(char *buffer, int length) {
            overflow = TRUE;
            /* Clear the overflow and prompt the user for input again */
            read_rest_of_line();
-           printf("Your input was too long, it has to be less than %d characters long. Please try again\n:",length);
+           printf("Your input has to be less than %d characters long. Please try again\n",length);
        } else {
            overflow = FALSE;
        }
    }while(overflow);
     /* Remove the EOL character from string */
     buffer[strlen(buffer) - 1] = NULL_TERMINATOR;
-
     /*If there was only an EOL character return false */
     if (strlen(buffer) == 0) {
         return FALSE;

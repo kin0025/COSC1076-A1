@@ -36,6 +36,9 @@ typedef enum
 #define NUM_DIMS 2
 
 #define INDEX_OFFSET 1
+
+/* Length of the string we expect to receive as co-ordinates input */
+#define COORDS_LEN 3
 /* what values could be contained in a cell on the board? */
 enum cell
 {
@@ -45,6 +48,7 @@ enum cell
 /* color codes required to display the tokens on the board */
 #define COLOR_RED     "\33[31m"
 #define COLOR_BLUE    "\33[34m"
+#define MENU_COLOUR   "\33[33m\33[41m"
 #define COLOR_RESET   "\33[0m"
 #define MAX_COLOR_LENGTH 7
 #endif /* defined SHARED_H */

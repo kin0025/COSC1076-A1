@@ -18,17 +18,18 @@ int main(void) {
     score scrboard[MAX_SCORES];
     struct player human, computer, *winner = NULL;
     int choice, run = TRUE;
-    /* initialise the scoreboard */
 
+    /* initialise the scoreboard */
+    init_scoreboard(scrboard);
     /* in a loop: display the main menu */
     do {
-        printf("\nWelcome to Reversi!\n");
+        printf("\n\n%sWelcome to Reversi!%s\n",MENU_COLOUR,COLOR_RESET);
         printf("================ \n");
         printf("Select and option: \n");
         printf("1. Play a game\n");
         printf("2. Display High Scores\n");
         printf("3. Quit the program\n");
-        printf("Please enter your choice:");
+        printf("Please enter your choice: ");
 
         /* get the user's selection from the main menu */
         choice = read_int();
@@ -38,17 +39,20 @@ int main(void) {
             case -1:
                 printf("Invalid choice");
                 break;
-                /* play a game and add the winner to the scoreboard */
             case 1:
+                /* play a game and add the winner to the scoreboard */
+
                 winner = play_game(&human, &computer);
                 if (winner != NULL) {
                     add_to_scoreboard(scrboard, winner);
                 }
                 break;
             case 2:
+                /* display scores */
                 display_scores(scrboard);
                 break;
             case 3:
+                /* quit the program */
                 run = FALSE;
                 break;
             default:
@@ -58,8 +62,6 @@ int main(void) {
     } while (run == TRUE);
 
 
-    /* display scores */
-    /* quit the program */
     return EXIT_SUCCESS;
 }
 

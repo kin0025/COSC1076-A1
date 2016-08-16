@@ -19,12 +19,14 @@
  **/
 void init_scoreboard(score scores[MAX_SCORES]) {
     int i;
-    struct player player1;
-    strcpy(player1.name, "");
-    player1.score = INITIAL_SCORE;
+    struct player temp;
+    strcpy(temp.name, "Name");
+    temp.score = 0;
+    temp.token = BLANK;
+    printf("%s %d",temp.name,temp.score);
     for (i = 0; i < MAX_SCORES; i++) {
 
-        scores[i] = player1;
+        scores[i] = temp;
 
     }
 }
@@ -50,10 +52,10 @@ BOOLEAN add_to_scoreboard(score scores[MAX_SCORES], struct player *winner) {
  **/
 void display_scores(score scores[MAX_SCORES]) {
     int i;
-    printf("=== SCOREBOARD ===\n ==================\n");
+    printf("=== SCOREBOARD ===\n==================\n");
     for (i = 0; i < MAX_SCORES; i++) {
-        if (strlen(scores[i].name)!=0) {
-            printf("|%-20s | %4d | \n\n", scores[i].name, scores[i].score);
+        if (scores[i].score!=0) {
+            printf("|%-20s | %2d |\n\n", scores[i].name, scores[i].score);
         }
     }
 }

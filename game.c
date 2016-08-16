@@ -56,6 +56,9 @@ struct player *play_game(struct player *first, struct player *second) {
 
     while (!quitting) {
         display_board(board, current, other);
+        if(current->score == 0){
+            printf("%s You currently have no tokens on the board and it is immpossible to win. %s\n",MENU_COLOUR,COLOR_RESET);
+        }
         if (!make_move(current, board)) {
             printf("Quitting Game and returning to menu \n \n");
             quitting = TRUE;
@@ -75,6 +78,7 @@ struct player *play_game(struct player *first, struct player *second) {
         winner = second;
     }
     else {
+        printf("The game was a draw! No one was added to scoreboard.\n");
         winner = NULL;
     }
 
@@ -151,21 +155,17 @@ BOOLEAN apply_move(game_board board, unsigned y, unsigned x, enum cell player_to
                 adder_amount[1] = 0;
         }
 
-        if (x - adder_amount[0] < 0 || y - adder_amount[1] < 0) {
-            more_squares = FALSE;
-            continue;
-        } else {
+
             xa = x;
             ya = y;
-        }
+
 
         while (more_squares) {
-            if ((xa + adder_amount[0] < 0) || (ya + adder_amount[1] < 0)) {
-                printf("Would have exceeded bounds, skipping operation %d %d\n",xa+adder_amount[0],ya+adder_amount[1]);
+            if (x + adder_amount[0] < 0 || y + adder_amount[1] < 0 || x + adder_amount[0] > 7 || y + adder_amount[1] > 7 ) {
+                /*printf("Would have exceeded bounds, skipping operation %d %d\n", xa + adder_amount[0], ya + adder_amount[1]);*/
                 break;
             }
-
-            xa += adder_amount[0];
+                xa += adder_amount[0];
             ya += adder_amount[1];
 
             /* Iterate till we get to the first blank cell, or the first cell of same colour. */
