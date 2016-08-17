@@ -130,10 +130,6 @@ BOOLEAN apply_move(game_board board, unsigned y, unsigned x, enum cell player_to
 
     enum cell other_token;
 
-    /* Moved to work from user input - 1-8 to work with arrays 0-7*/
-    x--;
-    y--;
-
     /* Set the types of tokens we are looking for */
     if (player_token == BLUE) {
         other_token = RED;
@@ -153,7 +149,7 @@ BOOLEAN apply_move(game_board board, unsigned y, unsigned x, enum cell player_to
         captured_dir = 0;
 
         /* Set the values to add to the coords each iteration based on direction */
-        switch (*current_dir) {
+        switch (current_dir) {
             case NORTH:
                 adder_amount[0] = 0;
                 adder_amount[1] = -1;

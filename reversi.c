@@ -57,7 +57,7 @@ int main(void) {
                 run = FALSE;
                 break;
             default:
-                /* If input is not one of the choices, inform the user and loop back */.
+                /* If input is not one of the choices, inform the user and loop back */
                 printf("Invalid choice\n\n");
                 break;
         }

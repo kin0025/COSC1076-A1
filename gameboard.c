@@ -118,6 +118,8 @@ void display_board(game_board board, struct player *first, struct player *second
             } else if (apply_move(board, i, j, first->token, FALSE)) {
                 if (DISPLAY_MARKERS) {
                     printf(" x |");
+                }else{
+                    printf("   |");
                 }
                 potential_moves++;
             } else {
