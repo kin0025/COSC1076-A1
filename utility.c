@@ -36,12 +36,17 @@ int read_int(void) {
         fgets(buffer, LINELEN, stdin);
         if (buffer[strlen(buffer) - 1] != '\n') {
             read_rest_of_line();
+            printf("Input too long, please try again\n");
+            running = TRUE;
+            continue;
         }
+        buffer[strlen(buffer) - 1] = NULL_TERMINATOR;
+
         output = (int) strtol(buffer, &ptr, BASE);
 
         if (output == -1 || ptr == buffer) {
             printf("The input was not a parseable number.\n");
-            return ERROR_VALUE;
+            running = TRUE;
         }else if (strlen(ptr) != 0) {
             printf("There was more than just a number entered, please try again.\n");
             running = TRUE;
