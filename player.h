@@ -32,10 +32,19 @@ struct player {
     unsigned score;
 };
 
+/* Initialises the first player, asks for their name and sets their token
+ * randomly. Returns FALSE if the player elects to quit.
+ */
 BOOLEAN init_first_player(struct player *human, enum cell *token);
 
+/* Initialises the second player, asks for their name and sets their token to
+ * the opposite of token. Returns FALSE if the player elects to quit.
+ */
 BOOLEAN init_second_player(struct player *computer, enum cell token);
 
+/* Requests input for the move from the player. Validates the move and loops
+ * until a valid move is found. Returns FALSE if the player elects to quit.
+ */
 BOOLEAN make_move(struct player *player, game_board board);
 
 #endif /* ifndef PLAYER_H */

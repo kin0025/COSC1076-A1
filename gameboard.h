@@ -48,8 +48,13 @@ enum direction {
 /* type definition of a game_board. It is just a 2-dimensional array*/
 typedef enum cell game_board[BOARD_HEIGHT][BOARD_WIDTH];
 
+/* Initialises all positions on the board to be BLANK */
 void init_game_board(game_board board);
 
+/* Displays the board, some info about the players and calculates whether
+ * there are any possible moves. The first player passed to it is assumed to
+ * be the current player
+ */
 void display_board(game_board board, struct player *human,
                    struct player *computer);
 

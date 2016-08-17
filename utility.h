@@ -28,13 +28,19 @@
 /* Used to mod numbers to get whether they are even */
 #define EVEN_NUM 2
 
-
+/* Clears the line of all characters in the event of a buffer overflow */
 void read_rest_of_line(void);
 
+/* Reads and validates an integer. Returns the integer */
 int read_int(void);
 
+/* Reads and validates a string. If the string exceeds length (size of
+ * buffer) it reprompts for input. If input is only EOL or is Ctrl+D returns
+ * false.
+ */
 BOOLEAN read_game_input(char *buffer, int length);
 
+/* Checks if a number is even. Returns TRUE if it is */
 BOOLEAN isEven(int input);
 
 #endif /* ifndef UTILITY_H */
