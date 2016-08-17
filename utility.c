@@ -53,7 +53,7 @@ int read_int(void) {
 
         /* Check that the integer conversion went successfully */
         if (output == -1 || ptr == buffer) {
-            printf("The input was not a parseable number.\n");
+            printf("The input was not a parsable number.\n");
             running = TRUE;
         } else if (strlen(ptr) != 0) {
             printf("There was more than just a number entered, please try "
@@ -69,7 +69,7 @@ int read_int(void) {
 BOOLEAN read_game_input(char *buffer, int length) {
     BOOLEAN overflow = FALSE;
     do {
-        /* Check for EOF input and return false, recieve input */
+        /* Check for EOF input and return false, receive input */
         if (fgets(buffer, length + EXTRACHARS, stdin) == NULL) {
             return FALSE;
         }

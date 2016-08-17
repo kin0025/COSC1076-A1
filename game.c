@@ -32,7 +32,8 @@
  * of the scores for the two players and return the player with the highest
  * score.
  **/
-struct player *play_game(struct player *first, struct player *second) {
+struct player *play_game(struct player *first, struct player *second, BOOLEAN
+is_computer) {
    game_board board;
    enum cell token;
    struct player *current, *other, *winner;
@@ -79,7 +80,6 @@ struct player *play_game(struct player *first, struct player *second) {
          printf("There are no blank squares. The game is over. Press enter to "
                         "see who has won!\n");
       }
-
       /* Make the current player's move, and if they choose to concede then
        * quit */
       if (!make_move(current, board)) {
@@ -87,13 +87,19 @@ struct player *play_game(struct player *first, struct player *second) {
          quitting = TRUE;
       }
 
-      /* Swap players and calculate scores at the end of the turn */
-      swap_players(&current, &other);
+      if (is_computer) {
+         quitting = ai_move(other, board);
+      }
+
+      if (!is_computer) {
+         /* Swap players and calculate scores at the end of the turn */
+         swap_players(&current, &other);
+      }
       first->score = game_score(board, first->token);
       second->score = game_score(board, second->token);
    }
 
-   /* Once they choose to quit, reacalculate scores again, tell them who won
+   /* Once they choose to quit, recalculate scores again, tell them who won
     * and return the winner */
    first->score = game_score(board, first->token);
    second->score = game_score(board, second->token);
@@ -197,7 +203,7 @@ apply_move(game_board board, unsigned y, unsigned x, enum cell player_token,
             adder_amount[1] = 0;
       }
 
-      /*Set the inital values of the coordinates */
+      /*Set the initial values of the coordinates */
       xa = x;
       ya = y;
 
@@ -294,4 +300,57 @@ void swap_players(struct player **first, struct player **second) {
    temp = *first;
    *first = *second;
    *second = temp;
+}
+
+/** Runs a move as the ai. Follows no strategy but picking the move that nets
+ *  it the most pieces. Returns false if it finds no moves to make.
+ */
+
+BOOLEAN ai_move(struct player *computer, game_board board) {
+   /* The coordinates entered, number of times user has been prompted for input
+    * and a loop incrementer */
+   struct cell_ai x[BOARD_HEIGHT * BOARD_WIDTH], runs, x, y;
+   BOOLEAN made_move = TRUE;
+   /* Print the user we are prompting for input */
+   if (computer->token == BLUE) {
+      printf("It is %s %s's %s turn:\n", COLOR_BLUE, computer->name,
+             COLOR_RESET);
+   } else {
+      printf("It is %s %s's %s turn\n", COLOR_RED, computer->name, COLOR_RESET);
+   }
+   printf("Enter a set of values in the format x , y where you want to place"
+                  " your piece:\n");
+
+   for (x = 0; x < BOARD_WIDTH; x++) {
+      for (y = 0; y < BOARD_HEIGHT; y++) {
+         x[x * y].value = apply_move(board, y, x, computer->token, FALSE);
+         x[x * y].x = x;
+         x[x * y].y = y;
+      }
+   }
+   /* QSort implementation sourced from stackoverflow.com/questions/6105513
+   qsort(x,BOARD_WIDTH*BOARD_HEIGHT, sizeof(cell_ai),sort_compare);
+   /* TODO: SORT THE ARRAY BY VALUE*/
+   runs = BOARD_HEIGHT * BOARD_WIDTH;
+   do {
+      if (runs == 0) {
+         made_move = FALSE;
+         break;
+      }
+      runs--;
+   } while (!apply_move(board, x[runs].y, x[runs].x, computer->token, TRUE));
+   return made_move;
+}
+
+int sort_compare(const void *a1, const void *a2) {
+   const struct cell_ai *element1 = a1;
+   const struct cell_ai *element2 = a2;
+   if (element1->value < element2->value) {
+      return -1;
+   } else if (element1->value > element2->value) {
+      return 1;
+   } else {
+      return 0;
+   }
+
 }

@@ -43,7 +43,7 @@ int main(void) {
          case 1:
             /* play a game and add the winner to the scoreboard */
 
-            winner = play_game(&human, &computer);
+            winner = play_game(&human, &computer,FALSE);
             if (winner != NULL) {
                add_to_scoreboard(scrboard, winner);
             }
@@ -55,6 +55,13 @@ int main(void) {
          case 3:
             /* quit the program */
             run = FALSE;
+            break;
+         case 4:
+            /* play against ai */
+            winner = play_game(&human, &computer,TRUE);
+            if (winner != NULL) {
+               add_to_scoreboard(scrboard, winner);
+            }
             break;
          default:
             /* If input is not one of the choices, inform the user and

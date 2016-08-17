@@ -114,7 +114,7 @@ BOOLEAN make_move(struct player *human, game_board board) {
          return FALSE;
       }
 
-      /* Tokenise the input and enter it into an array*/
+      /* Tokenize the input and enter it into an array*/
       token = strtok(input, COORD_DELIMS);
       z = 0;
       while (token != NULL) {
@@ -122,13 +122,13 @@ BOOLEAN make_move(struct player *human, game_board board) {
          z++;
          token = strtok(NULL, COORD_DELIMS);
       }
-      /* If there were not 2 tokens recieved, or the input is out of bounds,
+      /* If there were not 2 tokens received, or the input is out of bounds,
        * set the input_valid variable to false and try again */
       if (z != 2 || x[0] > BOARD_WIDTH - ARRAY_OFFSET ||
           x[1] > BOARD_HEIGHT - ARRAY_OFFSET || x[0] < 0 || x[1] < 0) {
          printf("Invalid co-ordinates provided, please try again.\n");
          /* We have to prevent the second statement from running , so add a
-          * first staqtment that will be false*/
+          * first statement that will be false*/
          input_valid = FALSE;
       } else {
          /* Increment the number of times false input has been provided */

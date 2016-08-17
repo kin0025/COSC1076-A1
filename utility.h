@@ -35,7 +35,7 @@ void read_rest_of_line(void);
 int read_int(void);
 
 /* Reads and validates a string. If the string exceeds length (size of
- * buffer) it reprompts for input. If input is only EOL or is Ctrl+D returns
+ * buffer) it re-prompts for input. If input is only EOL or is Ctrl+D returns
  * false.
  */
 BOOLEAN read_game_input(char *buffer, int length);

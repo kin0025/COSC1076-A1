@@ -16,6 +16,13 @@
 #ifndef GAME_H
 #define GAME_H
 
+struct cell_ai {
+    int value;
+    unsigned x;
+    unsigned y;
+};
+
+
 /* Core play game loop. Initialises both players passed to it, displays board
  * and calls move code.  Returns the winner of the game, or NULL if the game
  * was a draw.
@@ -26,11 +33,11 @@ struct player *play_game(struct player *human, struct player *computer);
  * and will attempt to apply them for the given token. Returns whether the
  * move was valid. If it returns true a move was applied
  */
-BOOLEAN apply_move(game_board board, unsigned y, unsigned x,
+int apply_move(game_board board, unsigned y, unsigned x,
                    enum cell player_token, BOOLEAN apply_changes);
 
 /* Calculates the number of tokens player_token on the board and returns them
- * as an unsingned integer. Does not modify the board
+ * as an unsigned integer. Does not modify the board
  */
 unsigned game_score(game_board board, enum cell player_token);
 
