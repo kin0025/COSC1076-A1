@@ -119,7 +119,7 @@ struct player *play_game(struct player *first, struct player *second) {
  * whether there are any pieces that can be captured. If there are no pieces
  * that can be captured in any direction, it is an invalid move.
  **/
-BOOLEAN
+int
 apply_move(game_board board, unsigned y, unsigned x, enum cell player_token,
            BOOLEAN apply_changes) {
    /* The direction currently been searched */
@@ -263,11 +263,7 @@ apply_move(game_board board, unsigned y, unsigned x, enum cell player_token,
 
    /* If we captured pieces it was a valid move and return true.
     * Otherwise return false */
-   if (captured_pieces != 0) {
-      return TRUE;
-   } else {
-      return FALSE;
-   }
+   return captured_pieces;
 }
 
 
