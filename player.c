@@ -102,7 +102,7 @@ BOOLEAN make_move(struct player *human, game_board board) {
             z++;
             token = strtok(NULL, DELIMS);
         }
-        if (z != 2) {
+        if (z != 2 || x[0] > BOARD_WIDTH || x[1] > BOARD_HEIGHT || x[0] <= 0 || x[1] <= 0) {
             printf("Invalid co-ordinates provided, please try again.\n");
             /* This will still pass us to the conditional, so we have to prevent the second statement from running */
             run = FALSE;

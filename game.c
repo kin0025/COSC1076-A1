@@ -57,7 +57,11 @@ struct player *play_game(struct player *first, struct player *second) {
     while (!quitting) {
         display_board(board, current, other);
         if(current->score == 0){
-            printf("%s You currently have no tokens on the board and it is immpossible to win. %s\n",MENU_COLOUR,COLOR_RESET);
+            /* This may be impossible */
+            printf("%s You currently have no tokens on the board and it is impossible to win. %s\n",MENU_COLOUR,COLOR_RESET);
+        }
+        if(current->score + other->score == 64){
+            printf("There are no blank squares. The game is over. Press enter to see who has won!\n");
         }
         if (!make_move(current, board)) {
             printf("Quitting Game and returning to menu \n \n");
@@ -81,7 +85,9 @@ struct player *play_game(struct player *first, struct player *second) {
         printf("The game was a draw! No one was added to scoreboard.\n");
         winner = NULL;
     }
-
+    if(winner!= NULL){
+        printf("%s won! Congratulations\n",winner->name);
+    }
     return winner;
 }
 

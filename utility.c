@@ -31,17 +31,24 @@ int read_int(void) {
     char buffer[LINELEN + EXTRACHARS];
     int output;
     char *ptr = NULL;
+    BOOLEAN running = TRUE;
+    do {
+        fgets(buffer, LINELEN, stdin);
+        if (buffer[strlen(buffer) - 1] != '\n') {
+            read_rest_of_line();
+        }
+        output = (int) strtol(buffer, &ptr, BASE);
 
-    fgets(buffer, LINELEN, stdin);
-    if (buffer[strlen(buffer) - 1] != '\n') {
-        read_rest_of_line();
-    }
-    output = (int) strtol(buffer, &ptr, BASE);
-
-    if (output == -1 || ptr == buffer) {
-        return ERROR_VALUE;
-    }
-
+        if (output == -1 || ptr == buffer) {
+            printf("The input was not a parseable number.\n");
+            return ERROR_VALUE;
+        }else if (strlen(ptr) != 0) {
+            printf("There was more than just a number entered, please try again.\n");
+            running = TRUE;
+        }else{
+            running = FALSE;
+        }
+    }while(running);
     return output;
 }
 
