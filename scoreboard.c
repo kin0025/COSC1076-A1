@@ -19,19 +19,19 @@
  * is set to 0.
  **/
 void init_scoreboard(score scores[MAX_SCORES]) {
-    int i;
-    /* Create a player to fill array with */
-    struct player temp;
-    /* Populate the player */
-    strcpy(temp.name, "");
-    temp.score = 0;
-    temp.token = BLANK;
-    /* Fill all entries with the player */
-    for (i = 0; i < MAX_SCORES; i++) {
+   int i;
+   /* Create a player to fill array with */
+   struct player temp;
+   /* Populate the player */
+   strcpy(temp.name, "");
+   temp.score = 0;
+   temp.token = BLANK;
+   /* Fill all entries with the player */
+   for (i = 0; i < MAX_SCORES; i++) {
 
-        scores[i] = temp;
+      scores[i] = temp;
 
-    }
+   }
 }
 
 
@@ -40,14 +40,15 @@ void init_scoreboard(score scores[MAX_SCORES]) {
  * to their score 
  **/
 BOOLEAN add_to_scoreboard(score scores[MAX_SCORES], struct player *winner) {
-    int i;
-    /* Shift all the scores down one and overwrite the last one */
-    for (i = 0; i < MAX_SCORES; i++) {
-        scores[MAX_SCORES - INDEX_OFFSET - i] = scores[MAX_SCORES - INDEX_OFFSET - i - SCRBRD_OFFSET];
-    }
-    scores[0] = *winner;
+   int i;
+   /* Shift all the scores down one and overwrite the last one */
+   for (i = 0; i < MAX_SCORES; i++) {
+      scores[MAX_SCORES - INDEX_OFFSET - i] = scores[MAX_SCORES - INDEX_OFFSET -
+                                                     i - SCRBRD_OFFSET];
+   }
+   scores[0] = *winner;
 
-    return TRUE;
+   return TRUE;
 }
 
 /**
@@ -55,28 +56,31 @@ BOOLEAN add_to_scoreboard(score scores[MAX_SCORES], struct player *winner) {
  * should match that provided in the assignment specification.
  **/
 void display_scores(score scores[MAX_SCORES]) {
-    int i;
-    /* Print a pretty header */
-    printf("\n=== %sSCOREBOARD%s ===\n==================\n", MENU_COLOUR, COLOR_RESET);
-    for (i = 0; i < SCRBRD_WIDTH; i++) {
-        printf("-");
-    }
-    printf("\n|Name                 |Score|\n");
+   int i;
+   /* Print a pretty header */
+   printf("\n=== %sSCOREBOARD%s ===\n==================\n", MENU_COLOUR,
+          COLOR_RESET);
+   for (i = 0; i < SCRBRD_WIDTH; i++) {
+      printf("-");
+   }
+   printf("\n|Name                 |Score|\n");
 
 
-    for (i = 0; i < SCRBRD_WIDTH; i++) {
-        printf("-");
-    }
-    printf("\n");
+   for (i = 0; i < SCRBRD_WIDTH; i++) {
+      printf("-");
+   }
+   printf("\n");
 
-    /* Loop through all the scoreboard entries and print them in a formatted fashion */
-    for (i = 0; i < MAX_SCORES; i++) {
-        /* Print a score if it is not equal to 0. If the first score is equal to zero, print a message */
-        if (scores[i].score != 0) {
-            printf("|%-20s | %2d  |\n", scores[i].name, scores[i].score);
-        } else if (i == 0) {
-            printf("No-one has won a game! Go play some games and check back.");
-            break;
-        }
-    }
+   /* Loop through all the scoreboard entries and print them in a formatted
+    * fashion */
+   for (i = 0; i < MAX_SCORES; i++) {
+      /* Print a score if it is not equal to 0. If the first score is equal to
+       * zero, print a message */
+      if (scores[i].score != 0) {
+         printf("|%-20s | %2d  |\n", scores[i].name, scores[i].score);
+      } else if (i == 0) {
+         printf("No-one has won a game! Go play some games and check back.");
+         break;
+      }
+   }
 }

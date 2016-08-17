@@ -56,7 +56,8 @@ int read_int(void) {
             printf("The input was not a parseable number.\n");
             running = TRUE;
         } else if (strlen(ptr) != 0) {
-            printf("There was more than just a number entered, please try again.\n");
+            printf("There was more than just a number entered, please try "
+                           "again.\n");
             running = TRUE;
         } else {
             running = FALSE;
@@ -78,7 +79,8 @@ BOOLEAN read_game_input(char *buffer, int length) {
             overflow = TRUE;
             /* Clear the overflow and prompt the user for input again */
             read_rest_of_line();
-            printf("Your input has to be less than %d characters long. Please try again\n", length);
+            printf("Your input has to be less than %d characters long. Please"
+                           " try again\n", length);
         } else {
             overflow = FALSE;
         }
