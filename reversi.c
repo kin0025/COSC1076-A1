@@ -11,19 +11,20 @@
 #include "reversi.h"
 
 /**
- * the hear of the program. The main() function in particular should 
+ * the heart of the program. The main() function in particular should 
  * manage the main menu for the program.
  **/
 int main(void) {
+    /* Create the scoreboard and players */
     score scrboard[MAX_SCORES];
     struct player human, computer, *winner = NULL;
     int choice, run = TRUE;
 
     /* initialise the scoreboard */
     init_scoreboard(scrboard);
-    /* in a loop: display the main menu */
+    /* in a loop: display the main menu until the user elects to quit*/
     do {
-        printf("\n\n%sWelcome to Reversi!%s\n",MENU_COLOUR,COLOR_RESET);
+        printf("\n\n%sWelcome to Reversi!%s\n", MENU_COLOUR, COLOR_RESET);
         printf("================ \n");
         printf("Select and option: \n");
         printf("1. Play a game\n");
@@ -56,6 +57,7 @@ int main(void) {
                 run = FALSE;
                 break;
             default:
+                /* If input is not one of the choices, inform the user and loop back */.
                 printf("Invalid choice\n\n");
                 break;
         }

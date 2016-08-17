@@ -39,54 +39,70 @@ struct player *play_game(struct player *first, struct player *second) {
     BOOLEAN quitting;
     srand(time(NULL));
 
+    /* Initialise players and check if they want to quit */
     if (!init_first_player(first, &token) || !init_second_player(second, first->token)) {
         printf("Quitting Game and returning to menu \n \n");
         return NULL;
     }
 
+    /* Initialise gameboard and scores for players */
     init_game_board(board);
-    first->score = game_score(board,first->token);
-    second->score = game_score(board,second->token);
+    first->score = game_score(board, first->token);
+    second->score = game_score(board, second->token);
+
+    /* Set the current and other player */
     current = first;
     other = second;
 
+    /* Swap the players so that the current player is a red token */
     if (current->token == BLUE) {
         swap_players(&current, &other);
     }
 
+    /* Run the play loop */
     while (!quitting) {
+        /* Display the game board */
         display_board(board, current, other);
-        if(current->score == 0){
+
+        /* If a player somehow has no pieces tell them they should concede */
+        if (current->score == 0) {
             /* This may be impossible */
-            printf("%s You currently have no tokens on the board and it is impossible to win. %s\n",MENU_COLOUR,COLOR_RESET);
+            printf("%s You currently have no tokens on the board and it is impossible to win. %s\n", MENU_COLOUR,
+                   COLOR_RESET);
         }
-        if(current->score + other->score == 64){
+
+        /* If the board is full tell them that if they somehow don't know */
+        if (current->score + other->score == 64) {
             printf("There are no blank squares. The game is over. Press enter to see who has won!\n");
         }
+
+        /* Make the current player's move, and if they choose to concede then quit */
         if (!make_move(current, board)) {
             printf("Quitting Game and returning to menu \n \n");
             quitting = TRUE;
         }
 
+        /* Swap players and calculate scores at the end of the turn */
         swap_players(&current, &other);
-        first->score = game_score(board,first->token);
-        second->score = game_score(board,second->token);
+        first->score = game_score(board, first->token);
+        second->score = game_score(board, second->token);
     }
-    first->score = game_score(board,first->token);
-    second->score = game_score(board,second->token);
+
+    /* Once they choose to quit, reacalculate scores again, tell them who won and return the winner */
+    first->score = game_score(board, first->token);
+    second->score = game_score(board, second->token);
 
 
     if (first->score > second->score) {
         winner = first;
-    }else if(second->score > first->score){
+    } else if (second->score > first->score) {
         winner = second;
-    }
-    else {
+    } else {
         printf("The game was a draw! No one was added to scoreboard.\n");
         winner = NULL;
     }
-    if(winner!= NULL){
-        printf("%s won! Congratulations\n",winner->name);
+    if (winner != NULL) {
+        printf("%s won! Congratulations\n", winner->name);
     }
     return winner;
 }
@@ -97,44 +113,58 @@ struct player *play_game(struct player *first, struct player *second) {
  * whether there are any pieces that can be captured. If there are no pieces
  * that can be captured in any direction, it is an invalid move.
  **/
-BOOLEAN apply_move(game_board board, unsigned y, unsigned x, enum cell player_token) {
-    enum direction dir[NUM_DIRS] = {NORTH, SOUTH, EAST, WEST, NORTH_EAST, NORTH_WEST, SOUTH_EAST,
-                                    SOUTH_WEST}, *current_dir = NULL;
+BOOLEAN apply_move(game_board board, unsigned y, unsigned x, enum cell player_token, BOOLEAN apply_changes) {
+    /* The direction currently been searched */
+    enum direction current_dir = 0;
+    /* The number of captured pieces total, and number captured in current direction respectively */
     unsigned captured_pieces = 0, captured_dir = 0;
-    int i, xa, ya;
+
+    /* The coordinates been examined during iteration */
+    int xa, ya;
+
+    /* An array of the values that get added to coordinates during iteration. Changes based on direction */
     int adder_amount[2];
+
+    /* Whether there are more squares in the current direction */
     BOOLEAN more_squares = TRUE;
+
     enum cell other_token;
-    /* Moved to work with arrays */
+
+    /* Moved to work from user input - 1-8 to work with arrays 0-7*/
     x--;
     y--;
 
+    /* Set the types of tokens we are looking for */
     if (player_token == BLUE) {
         other_token = RED;
     } else {
         other_token = BLUE;
     }
-    /** Iterate through all possible directions **/
-    if(board[x][y] != BLANK){
+
+    /* If the current position already has a token on it return false */
+    if (board[x][y] != BLANK) {
         return FALSE;
     }
 
-    for (i = 0; i < NUM_DIRS; i++) {
+    /* Iterate through all possible directions */
+    for (current_dir = 0; current_dir < NUM_DIRS; current_dir++) {
+
         more_squares = TRUE;
-        current_dir = &dir[i];
         captured_dir = 0;
+
+        /* Set the values to add to the coords each iteration based on direction */
         switch (*current_dir) {
             case NORTH:
                 adder_amount[0] = 0;
                 adder_amount[1] = -1;
-                 break;
+                break;
             case SOUTH:
                 adder_amount[0] = 0;
-                adder_amount[1] = 1;break;
+                adder_amount[1] = 1;
+                break;
             case EAST:
                 adder_amount[0] = 1;
                 adder_amount[1] = 0;
-
                 break;
             case WEST:
                 adder_amount[0] = -1;
@@ -161,43 +191,61 @@ BOOLEAN apply_move(game_board board, unsigned y, unsigned x, enum cell player_to
                 adder_amount[1] = 0;
         }
 
+        /*Set the inital values of the coordinates */
+        xa = x;
+        ya = y;
 
-            xa = x;
-            ya = y;
-
-
+        /* Iterate till we get to the first blank cell, or the first cell of same colour, or exceed bounds of board */
         while (more_squares) {
-            if (x + adder_amount[0] < 0 || y + adder_amount[1] < 0 || x + adder_amount[0] > 7 || y + adder_amount[1] > 7 ) {
+            /* Check if the current iteration will exceed bounds of board and break loop if they do */
+            if (x + adder_amount[0] < 0 || y + adder_amount[1] < 0 || x + adder_amount[0] > 7 ||
+                y + adder_amount[1] > 7) {
                 /*printf("Would have exceeded bounds, skipping operation %d %d\n", xa + adder_amount[0], ya + adder_amount[1]);*/
                 break;
             }
-                xa += adder_amount[0];
+
+            /* Adjust the coordinates based on current_dir */
+            xa += adder_amount[0];
             ya += adder_amount[1];
 
-            /* Iterate till we get to the first blank cell, or the first cell of same colour. */
+            /*
+            Check if the current square is the other players token. If it is, keep moving.
+            If it is our token then iterate back until we reach our token, replacing every cell with current player's token.
+            If we didn't capture anything (the cell was our immediate neighbour), then don't capture the user selected token
+            If it is blank then the direction is invalid.
+            */
             if (board[xa][ya] == other_token) {
                 more_squares = TRUE;
             } else if (board[xa][ya] == player_token) {
-                more_squares= FALSE;
-                /*capture the pieces! */
+                more_squares = FALSE;
+                /*Move back to the last token that wasn't the current player's*/
                 xa -= adder_amount[0];
                 ya -= adder_amount[1];
+                /* Loop through all the tokens until we reach the original */
                 while (xa != x || ya != y) {
-                    board[xa][ya] = player_token;
+                    /* Set each token to the player's token if apply changes is true*/
+                    if (apply_changes) {
+                        board[xa][ya] = player_token;
+                    }
+                    /* Increment the number of tokens captured this direction, and captured total */
                     captured_pieces++;
                     captured_dir++;
+                    /* Move back to the next token */
                     xa -= adder_amount[0];
                     ya -= adder_amount[1];
-                    }
-                if(captured_dir > 0){
+                }
+                /* If there were tokens captured this time, the move was valid. Set the initial token to the current player's token */
+                if (captured_dir > 0) {
                     board[x][y] = player_token;
                 }
             } else {
+                /* If it wasn't either player's token then it must be blank. Don't iterate any further */
                 more_squares = FALSE;
             }
-        }
-    }
+        }/*End While */
+    }/* End For */
 
+    /* If we captured pieces it was a valid move and return true. Otherwise return false */
     if (captured_pieces != 0) {
         return TRUE;
     } else {
@@ -205,14 +253,17 @@ BOOLEAN apply_move(game_board board, unsigned y, unsigned x, enum cell player_to
     }
 }
 
+
 /**
  * simply count up how many locations contain the player_token 
  * specified on the game_board.
  **/
 unsigned game_score(game_board board, enum cell player_token) {
     int x, y, total = 0;
+    /* Iterate through x and y coordinates */
     for (x = 0; x < BOARD_WIDTH; x++) {
         for (y = 0; y < BOARD_HEIGHT; y++) {
+            /* If the cell is set to a player token, then increment the total */
             if (board[y][x] == player_token) {
                 total++;
             }

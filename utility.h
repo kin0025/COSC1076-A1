@@ -9,6 +9,7 @@
  **********************************************************************/
 #include "shared.h"
 #include <limits.h>
+
 #ifndef UTILITY_H
 #define UTILITY_H
 
@@ -21,8 +22,10 @@
 /* newline character required for I/O functions */
 #define NEWLINE '\n'
 
-
+/* A value for errors */
 #define ERROR_VALUE -1
+
+/* Used to mod numbers to get whether they are even */
 #define EVEN_NUM 2
 
 
@@ -30,7 +33,7 @@ void read_rest_of_line(void);
 
 int read_int(void);
 
-BOOLEAN read_game_input(char * buffer, int length);
+BOOLEAN read_game_input(char *buffer, int length);
 
 BOOLEAN isEven(int input);
 

@@ -19,7 +19,7 @@
 struct player *play_game(struct player *human, struct player *computer);
 
 BOOLEAN apply_move(game_board board, unsigned y, unsigned x,
-                   enum cell player_token);
+                   enum cell player_token, BOOLEAN apply_changes);
 
 unsigned game_score(game_board board, enum cell player_token);
 

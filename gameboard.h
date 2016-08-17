@@ -8,6 +8,7 @@
  * Start up code provided by Paul Miller 
  **********************************************************************/
 #include "shared.h"
+
 #ifndef GAMEBOARD_H
 #define GAMEBOARD_H
 
@@ -19,23 +20,37 @@
 struct player;
 /* all the directions that we can capture pieces in leaving from this direction
  */
-enum direction
-{
+enum direction {
     NORTH, SOUTH, EAST, WEST, NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST
 };
-
+/* How many directions are there */
 #define NUM_DIRS 8
-/* how much space is required to display a column on the game board ? */
-#define COLUMN_WIDTH 4
-/* how tall is the game board - 8 places high */
+/* Height of the gameboard in number of cells */
 #define BOARD_HEIGHT 8
-/* how wide is the game board ? */
-#define BOARD_WIDTH BOARD_HEIGHT 
+/* Width of the game board in cells */
+#define BOARD_WIDTH BOARD_HEIGHT
+/* Size of the central staring square */
+#define CENTRE_SIZE 2
 
-/* type definition of a game_board. It is just a 2-dimensional array */
+/** For display purposes **/
+/* Number of chars needed to display a column */
+#define COLUMN_WIDTH 4
+/* Width of the left hand row index in chars */
+#define INDEX_WIDTH 3
+/* The starting row of the gameboard */
+#define STARTING_ROW 1
+/* Total width of the board in chars */
+#define DISPLAY_WIDTH (BOARD_WIDTH * COLUMN_WIDTH) + INDEX_WIDTH
+
+/* The offset between displayed dimensions and positions in the array */
+#define ARRAY_OFFSET 1
+
+/* type definition of a game_board. It is just a 2-dimensional array*/
 typedef enum cell game_board[BOARD_HEIGHT][BOARD_WIDTH];
 
 void init_game_board(game_board board);
-void display_board(game_board board, struct player * human,
-                   struct player * computer);
+
+void display_board(game_board board, struct player *human,
+                   struct player *computer);
+
 #endif /* ifndef GAMEBOARD_H */
