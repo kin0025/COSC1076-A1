@@ -12,7 +12,15 @@
  markers may find useful. For example. Bugs, inconsistencies, incomplete
  functionality, reasoning for design choices etc.
 
-No known bugs, inconsistencies.
+One known bug/inconsistency.
+    If the user enters a non-displaying character in the name input and
+    enters other characters as well, the character is stored in the array and
+     counted towards the string length as it should, however when displayed
+     in a formatted printf(%-20s) type function it counts towards width
+     without displaying as a character and throws of formatted lines. I was
+     unable to figure out a way of removing these short of massive if
+     statements iterating over the input strings (one condition per
+     undesirable character) , so the slight visual inconsistency is left in.
 
 The user is prompted of several scenarios in which they will have to end 
 the game, but the game is never ended for them. 
