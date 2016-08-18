@@ -48,11 +48,16 @@ BOOLEAN add_to_scoreboard(score scores[MAX_SCORES], struct player *winner) {
    }
    scores[0] = *winner;
    printf("Adding %s to scoreboard", winner->name);
-/*
 
+for(i = 0; i < MAX_SCORES;i++){
+   printf("%d,",scores[i].score);
+}
    qsort(scores, MAX_SCORES, sizeof(struct player),
          score_compare);
-*/
+
+   for(i = 0; i < MAX_SCORES;i++){
+      printf("%d,",scores[i].score);
+   }
 
    return TRUE;
 }
@@ -61,16 +66,17 @@ int score_compare(const void *score1, const void *score2) {
    const struct player *player1 = score1;
    const struct player *player2 = score2;
 
-   /* Logically easier to read than return score1->score - score2->score
+   /* Logically easier to read than return score2->score - score1->score and
+    * less likely to go over INT_MAX, but we are using small numbers.
     */
-   /*if (player1->score < player2->score) {
+   /*if (player2->score < player1->score) {
       return -1;
-   } else if (player1->score > player2->score) {
+   } else if (player2->score > player1->score) {
       return 1;
    } else {
       return 0;
    }*/
-   return (player1->score - player2->score);
+   return (player2->score - player1->score);
 
 }
 

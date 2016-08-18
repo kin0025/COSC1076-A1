@@ -72,7 +72,7 @@ display_board(game_board board, struct player *first, struct player *second) {
    print_player_info(first);
 
    /* Print spaces to account for the index on the left hand side */
-    for(i= 0; i<INDEX_WIDTH;i++){
+    for(i= 0; i<=INDEX_WIDTH;i++){
        printf(" ");
     }
 
