@@ -46,7 +46,7 @@ typedef enum {
 #define DISPLAY_MARKERS TRUE
 
 /* Whether to enable the singleplayer components of the game */
-#define ENABLE_SP TRUE
+#define ENABLE_SP FALSE
 
 /* what values could be contained in a cell on the board? */
 enum cell {

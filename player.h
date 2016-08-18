@@ -17,6 +17,9 @@
 /* the maximum length of a player name */
 #define NAMELEN 20
 
+/* Maximum number of chars for a score (8*8 = 64, so 2) */
+#define SCORELEN 2
+
 /* The score each player is initialised with */
 #define INITIAL_SCORE 0
 

@@ -377,6 +377,9 @@ struct player *play_sp(struct player *real_human, struct player *computer) {
       if (!quitting) {
          display_board(board, computer, real_human);
          quitting = !ai_move(computer, board);
+         if (quitting) {
+            printf("You have won human. I concede");
+         }
       }
 
       calculate_player_scores(real_human, computer, board);
@@ -431,14 +434,10 @@ BOOLEAN ai_move(struct player *computer, game_board board) {
    for (x = 0; x < BOARD_WIDTH; x++) {
       for (y = 0; y < BOARD_HEIGHT; y++) {
 
-         printf("Finding valid moves %d %d\n", x, y);
-         printf("Position %d\n", calculate_x_y(x, y));
          cells[calculate_x_y(x, y)].value = check_move(board, x, y,
                                                        computer->token, FALSE);
          cells[calculate_x_y(x, y)].x = x;
          cells[calculate_x_y(x, y)].y = y;
-
-         printf("Value %d", cells[calculate_x_y(x, y)].value);
 
       }
    }

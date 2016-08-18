@@ -61,59 +61,37 @@ void init_game_board(game_board board) {
  **/
 void
 display_board(game_board board, struct player *first, struct player *second) {
-   int i, x ,y , row, potential_moves = 0;
+   int i, x, y, row, potential_moves = 0;
    enum cell current;
    /*print top info rows*/
    printf("Other Player:\n");
+   print_player_info(second);
 
-   /* Print the other player's name, score and token colour - if they both have
-    * the same name they still know who's turn it is*/
-   if (second->token == RED) {
-      printf("Name: %-20s  Score: %2d  Token Color %s 0 %s\n", second->name,
-             second->score, COLOR_RED, COLOR_RESET);
-   } else {
-      printf("Name: %-20s  Score: %2d  Token Color %s 0 %s\n", second->name,
-             second->score, COLOR_BLUE, COLOR_RESET);
-   }
-   /* Print a border */
-   for (i = 0; i <= (DISPLAY_WIDTH + NAMELEN); i++) {
-      printf("=");
-   }
-   printf("\n");
    printf("Current Player:\n");
    /* Do the same as for the other player */
-   if (first->token == RED) {
-      printf("Name: %-20s  Score: %2d  Token Color %s 0 %s\n", first->name,
-             first->score, COLOR_RED, COLOR_RESET);
-   } else {
-      printf("Name: %-20s  Score: %2d  Token Color %s 0 %s\n", first->name,
-             first->score, COLOR_BLUE, COLOR_RESET);
-   }
-   for (i = 0; i <= (DISPLAY_WIDTH + NAMELEN); i++) {
-      printf("=");
-   }
-   printf("\n");
+   print_player_info(first);
 
    /* Print spaces to account for the index on the left hand side */
-   for (i = 0; i <= INDEX_WIDTH; i++) {
-      printf(" ");
-   }
+    for(i= 0; i<INDEX_WIDTH;i++){
+       printf(" ");
+    }
+
+
    /* Print the top row of numbers with spacing */
    for (i = 1; i <= BOARD_WIDTH; i++) {
       printf(" %d  ", i);
    }
    printf("\n");
 
-   for (i = 0; i <= DISPLAY_WIDTH; i++) {
-      printf("=");
-   }
+
+   print_divider('=',DISPLAY_WIDTH);
 
    row = STARTING_ROW;
    /*Print board*/
    /* Iterate through all the y values/rows */
    for (y = 0; y < BOARD_HEIGHT; y++) {
       /* Print the row number and a spacer */
-      printf("\n %d |", row);
+      printf(" %d |", row);
 
       /* Iterate through all the columns for this row */
       for (x = 0; x < BOARD_WIDTH; x++) {
@@ -137,19 +115,13 @@ display_board(game_board board, struct player *first, struct player *second) {
       printf("\n");
 
       /* Print the row divider */
-      for (i = 0; i <= DISPLAY_WIDTH; i++) {
-         printf("-");
-      }
+      print_divider('-',DISPLAY_WIDTH);
+
 
       row++;
    }
-   printf("\n");
-
    /* Print the board end */
-   for (i = 0; i <= DISPLAY_WIDTH; i++) {
-      printf("=");
-   }
-   printf("\n");
+   print_divider('=',DISPLAY_WIDTH);
 
    if (potential_moves == 0) {
       printf("%s NO POSSIBLE MOVES %s", MENU_COLOUR, COLOR_RESET);
@@ -157,3 +129,26 @@ display_board(game_board board, struct player *first, struct player *second) {
 
 }
 
+void print_player_info(struct player *printme) {
+   /* Print the other player's name, score and token colour - if they both have
+ * the same name they still know who's turn it is*/
+   if (printme->token == RED) {
+      printf("Name: %-*s  Score: %*d  Token Color %s 0 %s\n", NAMELEN,
+             printme->name, SCORELEN, printme->score, COLOR_RED, COLOR_RESET);
+   } else {
+      printf("Name: %-*s  Score: %*d  Token Color %s 0 %s\n", NAMELEN,
+             printme->name, SCORELEN, printme->score, COLOR_BLUE, COLOR_RESET);
+   }
+
+   /* Print a border */
+   print_divider('=',DISPLAY_WIDTH+NAMELEN);
+}
+
+/** Prints character char for length times and a newline at the end **/
+void print_divider(char character,int length){
+   int i;
+   for (i = 0; i <= length; i++) {
+      printf("%c",character);
+   }
+   printf("\n");
+}

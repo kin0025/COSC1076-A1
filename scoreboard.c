@@ -41,14 +41,37 @@ void init_scoreboard(score scores[MAX_SCORES]) {
  **/
 BOOLEAN add_to_scoreboard(score scores[MAX_SCORES], struct player *winner) {
    int i;
-   /* Shift all the scores down one and overwrite the last one */
+   /* Shift all the scores down one and overwrite the last one memcpy?*/
    for (i = 0; i < MAX_SCORES; i++) {
       scores[MAX_SCORES - INDEX_OFFSET - i] = scores[MAX_SCORES - INDEX_OFFSET -
                                                      i - SCRBRD_OFFSET];
    }
    scores[0] = *winner;
+   printf("Adding %s to scoreboard", winner->name);
+/*
+
+   qsort(scores, MAX_SCORES, sizeof(struct player),
+         score_compare);
+*/
 
    return TRUE;
+}
+
+int score_compare(const void *score1, const void *score2) {
+   const struct player *player1 = score1;
+   const struct player *player2 = score2;
+
+   /* Logically easier to read than return score1->score - score2->score
+    */
+   /*if (player1->score < player2->score) {
+      return -1;
+   } else if (player1->score > player2->score) {
+      return 1;
+   } else {
+      return 0;
+   }*/
+   return (player1->score - player2->score);
+
 }
 
 /**
@@ -60,16 +83,12 @@ void display_scores(score scores[MAX_SCORES]) {
    /* Print a pretty header */
    printf("\n=== %sSCOREBOARD%s ===\n==================\n", MENU_COLOUR,
           COLOR_RESET);
-   for (i = 0; i < SCRBRD_WIDTH; i++) {
-      printf("-");
-   }
-   printf("\n|Name                 |Score|\n");
 
+   print_divider('-', SCRBRD_WIDTH);
 
-   for (i = 0; i < SCRBRD_WIDTH; i++) {
-      printf("-");
-   }
-   printf("\n");
+   printf("|Name                 |Score|\n");
+
+   print_divider('-', SCRBRD_WIDTH);
 
    /* Loop through all the scoreboard entries and print them in a formatted
     * fashion */
@@ -77,7 +96,8 @@ void display_scores(score scores[MAX_SCORES]) {
       /* Print a score if it is not equal to 0. If the first score is equal to
        * zero, print a message */
       if (scores[i].score != 0) {
-         printf("|%-20s | %2d  |\n", scores[i].name, scores[i].score);
+         printf("|%-*s | %*d  |\n", NAMELEN, scores[i].name, SCORELEN,
+                scores[i].score);
       } else if (i == 0) {
          printf("No-one has won a game! Go play some games and check back.");
          break;

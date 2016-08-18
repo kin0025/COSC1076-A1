@@ -58,4 +58,10 @@ void init_game_board(game_board board);
 void display_board(game_board board, struct player *human,
                    struct player *computer);
 
+/** Prints character char for length times and a newline at the end **/
+void print_divider(char character,int length);
+
+void print_player_info(struct player *printme);
+
+
 #endif /* ifndef GAMEBOARD_H */

@@ -27,4 +27,10 @@ BOOLEAN add_to_scoreboard(score scores[MAX_SCORES], struct player *winner);
 /* Displays the formatted scores */
 void display_scores(score scores[MAX_SCORES]);
 
+/* Compares two player's scores and returns 1 if score 1 > score2, -1 if
+ * score1 < score2 and 0 if score1==score2
+ */
+int score_compare(const void *score1, const void *score2);
+
+
 #endif /* ifndef SCOREBOARD_H */
