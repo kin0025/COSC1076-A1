@@ -43,10 +43,10 @@ typedef enum {
 #define COORDS_LEN 3
 
 /* Whether to display the potential move markers */
-#define DISPLAY_MARKERS FALSE
+#define DISPLAY_MARKERS TRUE
 
 /* Whether to enable the singleplayer components of the game */
-#define ENABLE_SP FALSE
+#define ENABLE_SP TRUE
 
 /* what values could be contained in a cell on the board? */
 enum cell {

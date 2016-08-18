@@ -342,12 +342,14 @@ struct player *play_sp(struct player *real_human, struct player *computer) {
 
    calculate_player_scores(real_human, computer, board);
 
+   if (computer->token == RED) {
+      display_board(board, computer, real_human);
+      quitting = !ai_move(computer, board);
+   }
+
    /* Run the play loop */
    while (!quitting) {
-      if (computer->token == RED) {
-         display_board(board, computer, real_human);
-         quitting = !ai_move(computer, board);
-      }
+
 
       /* Display the game board */
       display_board(board, real_human, computer);
