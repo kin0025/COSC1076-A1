@@ -49,17 +49,12 @@ BOOLEAN add_to_scoreboard(score scores[MAX_SCORES], struct player *winner) {
    scores[0] = *winner;
    printf("Adding %s to scoreboard", winner->name);
 
-for(i = 0; i < MAX_SCORES;i++){
-   printf("%d,",scores[i].score);
-}
-   qsort(scores, MAX_SCORES, sizeof(struct player),
-         score_compare);
 
-   for(i = 0; i < MAX_SCORES;i++){
-      printf("%d,",scores[i].score);
-   }
+   qsort(scores, MAX_SCORES, sizeof(struct player), score_compare);
 
-   return TRUE;
+
+   return
+           TRUE;
 }
 
 int score_compare(const void *score1, const void *score2) {
