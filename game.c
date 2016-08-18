@@ -8,6 +8,7 @@
  * Start up code provided by Paul Miller 
  **********************************************************************/
 #include "game.h"
+
 /**
  * The heart of the game itself. You should do ALL initialisation required 
  * for the game in here or call function required for that purpose. For example
@@ -48,8 +49,8 @@ struct player *play_game(struct player *first, struct player *second) {
 
    /* Initialise gameboard and scores for players */
    init_game_board(board);
-   first->score = game_score(board, first->token);
-   second->score = game_score(board, second->token);
+
+   calculate_player_scores(first, second, board);
 
    /* Set the current and other player */
    current = first;
@@ -89,15 +90,14 @@ struct player *play_game(struct player *first, struct player *second) {
       /* Swap players and calculate scores at the end of the turn */
       swap_players(&current, &other);
 
-      first->score = game_score(board, first->token);
-      second->score = game_score(board, second->token);
+
+      calculate_player_scores(first, second, board);
    }
 
    /* Once they choose to quit, recalculate scores again, tell them who won
     * and return the winner */
-   first->score = game_score(board, first->token);
-   second->score = game_score(board, second->token);
 
+   calculate_player_scores(first, second, board);
 
    if (first->score > second->score) {
       winner = first;
@@ -123,11 +123,11 @@ struct player *play_game(struct player *first, struct player *second) {
  **/
 BOOLEAN
 apply_move(game_board board, unsigned y, unsigned x, enum cell player_token) {
-if(check_move(board,x,y,player_token,TRUE) > 0){
-   return TRUE;
-}else {
-   return false;
-}
+   if (check_move(board, x, y, player_token, TRUE) > 0) {
+      return TRUE;
+   } else {
+      return FALSE;
+   }
 }
 
 int
@@ -308,7 +308,11 @@ void swap_players(struct player **first, struct player **second) {
    *second = temp;
 }
 
-
+void calculate_player_scores(struct player *player1, struct player *player2,
+                             game_board board) {
+   player1->score = game_score(board, player1->token);
+   player2->score = game_score(board, player2->token);
+}
 
 
 /***************** SPECIAL COMPUTER FUNCTIONALITY *************************/
@@ -328,32 +332,28 @@ struct player *play_sp(struct player *real_human, struct player *computer) {
       return NULL;
    }
    printf("This is the computer player. Set their name below\n");
-   if(!init_second_player(computer, first->token)){
+   if (!init_second_player(computer, real_human->token)) {
       printf("Quitting Game and returning to menu \n \n");
       return NULL;
    }
 
    /* Initialise gameboard and scores for players */
    init_game_board(board);
-   real_human->score = game_score(board, real_human->token);
-   computer->score = game_score(board, computer->token);
 
-   /* Set the current and other player */
-
-   /* Swap the players so that the current player is a red token */
+   calculate_player_scores(real_human, computer, board);
 
    /* Run the play loop */
    while (!quitting) {
-      if(computer->token==RED){
+      if (computer->token == RED) {
          display_board(board, computer, real_human);
-         quitting = !ai_move(other, board);
+         quitting = !ai_move(computer, board);
       }
 
       /* Display the game board */
       display_board(board, real_human, computer);
 
       /* If a player somehow has no pieces tell them they should concede */
-      if (current->score == 0) {
+      if (real_human->score == 0) {
          /* This may be impossible */
          printf("%s You currently have no tokens on the board and it is "
                         "impossible to win. %s\n",
@@ -362,7 +362,7 @@ struct player *play_sp(struct player *real_human, struct player *computer) {
       }
 
       /* If the board is full tell them that if they somehow don't know */
-      if (current->score + other->score == 64) {
+      if (real_human->score + computer->score == 64) {
          printf("There are no blank squares. The game is over. Press enter to "
                         "see who has won!\n");
       }
@@ -374,19 +374,17 @@ struct player *play_sp(struct player *real_human, struct player *computer) {
          quitting = TRUE;
       }
 
-      if(!quitting) {
+      if (!quitting) {
          display_board(board, computer, real_human);
-         quitting = !ai_move(other, board);
+         quitting = !ai_move(computer, board);
       }
 
-      first->score = game_score(board, first->token);
-      second->score = game_score(board, second->token);
+      calculate_player_scores(real_human, computer, board);
    }
 
    /* Once they choose to quit, recalculate scores again, tell them who won
     * and return the winner */
-   first->score = game_score(board, first->token);
-   second->score = game_score(board, second->token);
+   calculate_player_scores(real_human, computer, board);
 
 
    if (real_human->score > computer->score) {
@@ -400,10 +398,9 @@ struct player *play_sp(struct player *real_human, struct player *computer) {
       winner = NULL;
    }
    if (winner != NULL) {
-      }
+   }
    return winner;
 }
-
 
 
 /** Runs a move as the ai. Follows no strategy but picking the move that nets
@@ -412,7 +409,7 @@ struct player *play_sp(struct player *real_human, struct player *computer) {
 BOOLEAN ai_move(struct player *computer, game_board board) {
    /* The coordinates entered, number of times user has been prompted for input
     * and a loop incrementer */
-   struct cell_ai cells[BOARD_HEIGHT*BOARD_WIDTH],temp;
+   struct cell_ai cells[BOARD_HEIGHT * BOARD_WIDTH], temp;
    int runs, x, y;
    BOOLEAN made_move = TRUE;
 
@@ -434,14 +431,14 @@ BOOLEAN ai_move(struct player *computer, game_board board) {
    for (x = 0; x < BOARD_WIDTH; x++) {
       for (y = 0; y < BOARD_HEIGHT; y++) {
 
-         printf("Finding valid moves %d %d\n",x,y);
-         printf("Position %d\n",calculate_x_y(x,y));
-         cells[calculate_x_y(x,y)].value = apply_move(board, y, x,
-                                                      computer->token, FALSE);
-         cells[calculate_x_y(x,y)].x = x;
-         cells[calculate_x_y(x,y)].y = y;
+         printf("Finding valid moves %d %d\n", x, y);
+         printf("Position %d\n", calculate_x_y(x, y));
+         cells[calculate_x_y(x, y)].value = check_move(board, x, y,
+                                                       computer->token, FALSE);
+         cells[calculate_x_y(x, y)].x = x;
+         cells[calculate_x_y(x, y)].y = y;
 
-         printf("Value %d",cells[calculate_x_y(x,y)].value);
+         printf("Value %d", cells[calculate_x_y(x, y)].value);
 
       }
    }
@@ -453,15 +450,16 @@ BOOLEAN ai_move(struct player *computer, game_board board) {
 
 
    do {
-      made_move = apply_move(board, cells[runs].y, cells[runs].x,
+      made_move = check_move(board, cells[runs].x, cells[runs].y,
                              computer->token, TRUE);
       runs--;
-   } while (!made_move && runs >=0);
+   } while (!made_move && runs >= 0);
    printf("%d,%d", cells[runs].x, cells[runs].y);
    return made_move;
 }
-int calculate_x_y(int x, int y){
-   return(x*BOARD_WIDTH + y);
+
+int calculate_x_y(int x, int y) {
+   return (x * BOARD_WIDTH + y);
 }
 
 int sort_compare(const void *a1, const void *a2) {

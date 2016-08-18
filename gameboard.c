@@ -61,7 +61,7 @@ void init_game_board(game_board board) {
  **/
 void
 display_board(game_board board, struct player *first, struct player *second) {
-   int i, j, k, row, potential_moves = 0;
+   int i, x ,y , row, potential_moves = 0;
    enum cell current;
    /*print top info rows*/
    printf("Other Player:\n");
@@ -111,19 +111,19 @@ display_board(game_board board, struct player *first, struct player *second) {
    row = STARTING_ROW;
    /*Print board*/
    /* Iterate through all the y values/rows */
-   for (i = 0; i < BOARD_HEIGHT; i++) {
+   for (y = 0; y < BOARD_HEIGHT; y++) {
       /* Print the row number and a spacer */
       printf("\n %d |", row);
 
       /* Iterate through all the columns for this row */
-      for (j = 0; j < BOARD_WIDTH; j++) {
+      for (x = 0; x < BOARD_WIDTH; x++) {
          /*Print the token based on its value*/
-         current = board[j][i];
+         current = board[x][y];
          if (current == RED) {
             printf("%s 0 %s|", COLOR_RED, COLOR_RESET);
          } else if (current == BLUE) {
             printf("%s 0 %s|", COLOR_BLUE, COLOR_RESET);
-         } else if (check_move(board, i, j, first->token, FALSE)) {
+         } else if (check_move(board, x, y, first->token, FALSE)) {
             if (DISPLAY_MARKERS) {
                printf(" x |");
             } else {
@@ -137,7 +137,7 @@ display_board(game_board board, struct player *first, struct player *second) {
       printf("\n");
 
       /* Print the row divider */
-      for (k = 0; k <= DISPLAY_WIDTH; k++) {
+      for (i = 0; i <= DISPLAY_WIDTH; i++) {
          printf("-");
       }
 

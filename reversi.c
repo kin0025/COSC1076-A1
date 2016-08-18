@@ -46,7 +46,7 @@ int main(void) {
          case 1:
             /* play a game and add the winner to the scoreboard */
 
-            winner = play_game(&human, &computer, FALSE);
+            winner = play_game(&human, &computer);
             if (winner != NULL) {
                add_to_scoreboard(scrboard, winner);
             }
@@ -62,11 +62,11 @@ int main(void) {
          case 4:
             if (ENABLE_SP) {
                /* play against ai */
-               winner = play_game(&human, &computer, TRUE);
+               winner = play_sp(&human, &computer);
                if (winner != NULL) {
                   add_to_scoreboard(scrboard, winner);
                }
-               break;
+                  break;
             }
          default:
             /* If input is not one of the choices, inform the user and

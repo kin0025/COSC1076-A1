@@ -27,8 +27,7 @@ struct cell_ai {
  * and calls move code.  Returns the winner of the game, or NULL if the game
  * was a draw.
  */
-struct player *play_game(struct player *human, struct player *computer,
-                         BOOLEAN ai_game);
+struct player *play_game(struct player *human, struct player *computer);
 
 /* Applies the move. Receives the game board, and coordinates for the move,
  * and will attempt to apply them for the given token. Returns whether the
@@ -53,6 +52,9 @@ unsigned game_score(game_board board, enum cell player_token);
 /* Swaps the pointers of the first and second player */
 void swap_players(struct player **first, struct player **second);
 
+/* Sets the scores of both players based on the gameboard */
+void calculate_player_scores(struct player *player1,struct player *player2,
+                             game_board board);
 
 /***************** SPECIAL COMPUTER FUNCTIONALITY *************************/
 

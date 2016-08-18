@@ -88,7 +88,7 @@ BOOLEAN make_move(struct player *human, game_board board) {
    char *token = NULL;
    /* The coordinates entered, number of times user has been prompted for input
     * and a loop incrementer */
-   int x[NUM_DIMS] = {0, 0}, runs = 0, z, move_worked;
+   int x[NUM_DIMS] = {0, 0}, runs = 0, z;
    char *ptr = NULL;
    BOOLEAN input_valid = TRUE;
 
@@ -139,8 +139,6 @@ BOOLEAN make_move(struct player *human, game_board board) {
       }
       /* Apply move and input valid both have to return true to break the loop*/
 
-      move_worked = apply_move(board, x[1], x[0], human->token);
-
-   } while (!(input_valid && move_worked!= 0));
+   } while (!(input_valid && apply_move(board, x[1], x[0], human->token)));
    return TRUE;
 }
