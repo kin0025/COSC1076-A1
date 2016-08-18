@@ -45,6 +45,9 @@ typedef enum {
 /* Whether to display the potential move markers */
 #define DISPLAY_MARKERS TRUE
 
+/* Whether to enable the singleplayer components of the game */
+#define ENABLE_SP TRUE
+
 /* what values could be contained in a cell on the board? */
 enum cell {
     BLANK, RED, BLUE

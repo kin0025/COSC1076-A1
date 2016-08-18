@@ -17,9 +17,6 @@ No known bugs, inconsistencies.
 The user is prompted of several scenarios in which they will have to end 
 the game, but the game is never ended for them. 
 
-During this time they still have a chance to check if they are able to 
-make a move to allow for algorithm error.
-
 An extra display feature was added that displays what squares are valid 
 moves, it is activated by changing DISPLAY_MARKERS to TRUE in shared.h
 
@@ -28,3 +25,11 @@ passed to the program, as opposed to players always been passed in the same
 position. This it to make it easier to see the current player when the board
 is displayed, and to allow move markers to be printed based upon this 
 assumption
+
+A Singleplayer mode was added where one player is a computer. This is
+entirely contained in the end of game.c (functional splitting be dammed) and
+contains mainly duplicated code from the main function, as boolean flags
+could not be added to the initial functions to tell the game what kind of
+players are playing.
+This functionality is enabled through setting ENABLE_SP to TRUE in shared.h
+

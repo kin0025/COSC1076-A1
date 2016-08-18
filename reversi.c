@@ -30,6 +30,9 @@ int main(void) {
       printf("1. Play a game\n");
       printf("2. Display High Scores\n");
       printf("3. Quit the program\n");
+      if (ENABLE_SP) {
+         printf("4. Play Against Computer\n");
+      }
       printf("Please enter your choice: ");
 
       /* get the user's selection from the main menu */
@@ -43,7 +46,7 @@ int main(void) {
          case 1:
             /* play a game and add the winner to the scoreboard */
 
-            winner = play_game(&human, &computer,FALSE);
+            winner = play_game(&human, &computer, FALSE);
             if (winner != NULL) {
                add_to_scoreboard(scrboard, winner);
             }
@@ -57,12 +60,14 @@ int main(void) {
             run = FALSE;
             break;
          case 4:
-            /* play against ai */
-            winner = play_game(&human, &computer,TRUE);
-            if (winner != NULL) {
-               add_to_scoreboard(scrboard, winner);
+            if (ENABLE_SP) {
+               /* play against ai */
+               winner = play_game(&human, &computer, TRUE);
+               if (winner != NULL) {
+                  add_to_scoreboard(scrboard, winner);
+               }
+               break;
             }
-            break;
          default:
             /* If input is not one of the choices, inform the user and
              * loop back */

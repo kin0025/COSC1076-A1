@@ -123,7 +123,7 @@ display_board(game_board board, struct player *first, struct player *second) {
             printf("%s 0 %s|", COLOR_RED, COLOR_RESET);
          } else if (current == BLUE) {
             printf("%s 0 %s|", COLOR_BLUE, COLOR_RESET);
-         } else if (apply_move(board, i, j, first->token, FALSE)) {
+         } else if (check_move(board, i, j, first->token, FALSE)) {
             if (DISPLAY_MARKERS) {
                printf(" x |");
             } else {

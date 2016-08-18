@@ -8,7 +8,6 @@
  * Start up code provided by Paul Miller 
  **********************************************************************/
 #include "game.h"
-
 /**
  * The heart of the game itself. You should do ALL initialisation required 
  * for the game in here or call function required for that purpose. For example
@@ -31,9 +30,9 @@
  * When you detect a request to end the game, you should do a final calculation
  * of the scores for the two players and return the player with the highest
  * score.
+ *
  **/
-struct player *play_game(struct player *first, struct player *second, BOOLEAN
-is_computer) {
+struct player *play_game(struct player *first, struct player *second) {
    game_board board;
    enum cell token;
    struct player *current, *other, *winner;
@@ -87,14 +86,9 @@ is_computer) {
          quitting = TRUE;
       }
 
-      if (is_computer) {
-         quitting = ai_move(other, board);
-      }
+      /* Swap players and calculate scores at the end of the turn */
+      swap_players(&current, &other);
 
-      if (!is_computer) {
-         /* Swap players and calculate scores at the end of the turn */
-         swap_players(&current, &other);
-      }
       first->score = game_score(board, first->token);
       second->score = game_score(board, second->token);
    }
@@ -124,10 +118,22 @@ is_computer) {
  * It iterates over all the directions from the coordinate specified to see
  * whether there are any pieces that can be captured. If there are no pieces
  * that can be captured in any direction, it is an invalid move.
+ * At this point just a wrapper function to check move, as we were not able
+ * to  modify function specifications.
  **/
+BOOLEAN
+apply_move(game_board board, unsigned y, unsigned x, enum cell player_token) {
+if(check_move(board,x,y,player_token,TRUE) > 0){
+   return TRUE;
+}else {
+   return false;
+}
+}
+
 int
-apply_move(game_board board, unsigned y, unsigned x, enum cell player_token,
+check_move(game_board board, unsigned x, unsigned y, enum cell player_token,
            BOOLEAN apply_changes) {
+
    /* The direction currently been searched */
    enum direction current_dir = 0;
    /* The number of captured pieces total, and number captured in current
@@ -256,7 +262,7 @@ apply_move(game_board board, unsigned y, unsigned x, enum cell player_token,
             }
             /* If there were tokens captured this time, the move was valid.
              * Set the initial token to the current player's token */
-            if (captured_dir > 0) {
+            if (captured_dir > 0 && apply_changes) {
                board[x][y] = player_token;
             }
          } else {
@@ -270,8 +276,8 @@ apply_move(game_board board, unsigned y, unsigned x, enum cell player_token,
    /* If we captured pieces it was a valid move and return true.
     * Otherwise return false */
    return captured_pieces;
-}
 
+}
 
 /**
  * simply count up how many locations contain the player_token 
@@ -302,44 +308,160 @@ void swap_players(struct player **first, struct player **second) {
    *second = temp;
 }
 
+
+
+
+/***************** SPECIAL COMPUTER FUNCTIONALITY *************************/
+
+
+
+struct player *play_sp(struct player *real_human, struct player *computer) {
+   game_board board;
+   enum cell token;
+   struct player *winner;
+   BOOLEAN quitting;
+   srand(time(NULL));
+
+   /* Initialise players and check if they want to quit */
+   if (!init_first_player(real_human, &token)) {
+      printf("Quitting Game and returning to menu \n \n");
+      return NULL;
+   }
+   printf("This is the computer player. Set their name below\n");
+   if(!init_second_player(computer, first->token)){
+      printf("Quitting Game and returning to menu \n \n");
+      return NULL;
+   }
+
+   /* Initialise gameboard and scores for players */
+   init_game_board(board);
+   real_human->score = game_score(board, real_human->token);
+   computer->score = game_score(board, computer->token);
+
+   /* Set the current and other player */
+
+   /* Swap the players so that the current player is a red token */
+
+   /* Run the play loop */
+   while (!quitting) {
+      if(computer->token==RED){
+         display_board(board, computer, real_human);
+         quitting = !ai_move(other, board);
+      }
+
+      /* Display the game board */
+      display_board(board, real_human, computer);
+
+      /* If a player somehow has no pieces tell them they should concede */
+      if (current->score == 0) {
+         /* This may be impossible */
+         printf("%s You currently have no tokens on the board and it is "
+                        "impossible to win. %s\n",
+                MENU_COLOUR,
+                COLOR_RESET);
+      }
+
+      /* If the board is full tell them that if they somehow don't know */
+      if (current->score + other->score == 64) {
+         printf("There are no blank squares. The game is over. Press enter to "
+                        "see who has won!\n");
+      }
+
+      /* Make the current player's move, and if they choose to concede then
+       * quit */
+      if (!make_move(real_human, board)) {
+         printf("Quitting Game and returning to menu \n \n");
+         quitting = TRUE;
+      }
+
+      if(!quitting) {
+         display_board(board, computer, real_human);
+         quitting = !ai_move(other, board);
+      }
+
+      first->score = game_score(board, first->token);
+      second->score = game_score(board, second->token);
+   }
+
+   /* Once they choose to quit, recalculate scores again, tell them who won
+    * and return the winner */
+   first->score = game_score(board, first->token);
+   second->score = game_score(board, second->token);
+
+
+   if (real_human->score > computer->score) {
+      winner = real_human;
+      printf("%s won! Congratulations\n", winner->name);
+   } else if (computer->score > real_human->score) {
+      winner = computer;
+      printf("%s won! Try again\n", winner->name);
+   } else {
+      printf("The game was a draw! No one was added to scoreboard.\n");
+      winner = NULL;
+   }
+   if (winner != NULL) {
+      }
+   return winner;
+}
+
+
+
 /** Runs a move as the ai. Follows no strategy but picking the move that nets
  *  it the most pieces. Returns false if it finds no moves to make.
  */
-
 BOOLEAN ai_move(struct player *computer, game_board board) {
    /* The coordinates entered, number of times user has been prompted for input
     * and a loop incrementer */
-   struct cell_ai x[BOARD_HEIGHT * BOARD_WIDTH], runs, x, y;
+   struct cell_ai cells[BOARD_HEIGHT*BOARD_WIDTH],temp;
+   int runs, x, y;
    BOOLEAN made_move = TRUE;
+
+   for (x = 0; x < BOARD_HEIGHT * BOARD_WIDTH; x++) {
+      cells[x] = temp;
+   }
+
    /* Print the user we are prompting for input */
    if (computer->token == BLUE) {
-      printf("It is %s %s's %s turn:\n", COLOR_BLUE, computer->name,
+      printf("It is %s %s's (Computer) %s turn:\n", COLOR_BLUE, computer->name,
              COLOR_RESET);
    } else {
-      printf("It is %s %s's %s turn\n", COLOR_RED, computer->name, COLOR_RESET);
+      printf("It is %s %s's (Computer) %s turn\n", COLOR_RED, computer->name,
+             COLOR_RESET);
    }
    printf("Enter a set of values in the format x , y where you want to place"
                   " your piece:\n");
 
    for (x = 0; x < BOARD_WIDTH; x++) {
       for (y = 0; y < BOARD_HEIGHT; y++) {
-         x[x * y].value = apply_move(board, y, x, computer->token, FALSE);
-         x[x * y].x = x;
-         x[x * y].y = y;
+
+         printf("Finding valid moves %d %d\n",x,y);
+         printf("Position %d\n",calculate_x_y(x,y));
+         cells[calculate_x_y(x,y)].value = apply_move(board, y, x,
+                                                      computer->token, FALSE);
+         cells[calculate_x_y(x,y)].x = x;
+         cells[calculate_x_y(x,y)].y = y;
+
+         printf("Value %d",cells[calculate_x_y(x,y)].value);
+
       }
    }
-   /* QSort implementation sourced from stackoverflow.com/questions/6105513
-   qsort(x,BOARD_WIDTH*BOARD_HEIGHT, sizeof(cell_ai),sort_compare);
-   /* TODO: SORT THE ARRAY BY VALUE*/
-   runs = BOARD_HEIGHT * BOARD_WIDTH;
+
+   qsort(cells, BOARD_WIDTH * BOARD_HEIGHT, sizeof(struct cell_ai),
+         sort_compare);
+
+   runs = BOARD_HEIGHT * BOARD_WIDTH - ARRAY_OFFSET;
+
+
    do {
-      if (runs == 0) {
-         made_move = FALSE;
-         break;
-      }
+      made_move = apply_move(board, cells[runs].y, cells[runs].x,
+                             computer->token, TRUE);
       runs--;
-   } while (!apply_move(board, x[runs].y, x[runs].x, computer->token, TRUE));
+   } while (!made_move && runs >=0);
+   printf("%d,%d", cells[runs].x, cells[runs].y);
    return made_move;
+}
+int calculate_x_y(int x, int y){
+   return(x*BOARD_WIDTH + y);
 }
 
 int sort_compare(const void *a1, const void *a2) {

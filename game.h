@@ -27,14 +27,23 @@ struct cell_ai {
  * and calls move code.  Returns the winner of the game, or NULL if the game
  * was a draw.
  */
-struct player *play_game(struct player *human, struct player *computer);
+struct player *play_game(struct player *human, struct player *computer,
+                         BOOLEAN ai_game);
 
 /* Applies the move. Receives the game board, and coordinates for the move,
  * and will attempt to apply them for the given token. Returns whether the
  * move was valid. If it returns true a move was applied
  */
-int apply_move(game_board board, unsigned y, unsigned x,
-                   enum cell player_token, BOOLEAN apply_changes);
+BOOLEAN apply_move(game_board board, unsigned y, unsigned x,
+                   enum cell player_token);
+
+/*
+ * What I wanted apply move to be, but couldn't add parameters/ change
+ * function definition.
+ */
+int check_move(game_board board, unsigned y, unsigned x,
+               enum cell player_token, BOOLEAN apply_changes);
+
 
 /* Calculates the number of tokens player_token on the board and returns them
  * as an unsigned integer. Does not modify the board
@@ -43,5 +52,22 @@ unsigned game_score(game_board board, enum cell player_token);
 
 /* Swaps the pointers of the first and second player */
 void swap_players(struct player **first, struct player **second);
+
+
+/***************** SPECIAL COMPUTER FUNCTIONALITY *************************/
+
+
+/* For SinglePlayer Play */
+struct player *play_sp(struct player *real_human, struct player *computer);
+
+/* A function that makes a move on the AI's behalf */
+BOOLEAN ai_move(struct player *computer, game_board board);
+
+
+int calculate_x_y(int x, int y);
+
+
+int sort_compare(const void *a1, const void *a2);
+
 
 #endif /* ifndef GAME_H */
