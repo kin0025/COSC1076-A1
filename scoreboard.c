@@ -40,28 +40,31 @@ void init_scoreboard(score scores[MAX_SCORES]) {
  * to their score 
  **/
 BOOLEAN add_to_scoreboard(score scores[MAX_SCORES], struct player *winner) {
-   int i;
-   BOOLEAN smaller_than;
+   int i,x;
+   BOOLEAN set_score = FALSE;
 
-   if(winner->score <= scores[MAX_SCORES-ARRAY_OFFSET].score){
+/*
+   if (winner->score <= scores[MAX_SCORES - ARRAY_OFFSET].score) {
       return FALSE;
    }
-   scores[MAX_SCORES-ARRAY_OFFSET] = *winner;
+   scores[MAX_SCORES - ARRAY_OFFSET] = *winner;
    qsort(scores, MAX_SCORES, sizeof(struct player), score_compare);
    return TRUE;
+*/
 
 /* More efficient algorithm that doesn't need qsort? */
-   i=0;
-   while(i<MAX_SCORES && smaller_than) {
-      if(score_compare(winner,&scores[i])<0){
-
+   i = 0;
+   while (i < MAX_SCORES && !set_score) {
+      if (score_compare(winner, &scores[i]) < 0) {
+         for(x = MAX_SCORES-ARRAY_OFFSET; x > i;x--) {
+            scores[x] = scores[x-ARRAY_OFFSET];
+         }
+         scores[x] = *winner;
+         set_score = TRUE;
       }
-
-
-      scores[MAX_SCORES - INDEX_OFFSET - i] = scores[MAX_SCORES - INDEX_OFFSET -
-                                                     i - SCRBRD_OFFSET];
       i++;
    }
+   return set_score;
 
 }
 
