@@ -48,7 +48,9 @@ int main(void) {
 
             winner = play_game(&human, &computer);
             if (winner != NULL) {
-               add_to_scoreboard(scrboard, winner);
+               if(!add_to_scoreboard(scrboard, winner)){
+                  printf("Your score was not in the top 10.");
+               }
             }
             break;
          case 2:

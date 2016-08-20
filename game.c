@@ -380,7 +380,7 @@ struct player *play_sp(struct player *real_human, struct player *computer) {
          display_board(board, computer, real_human);
          quitting = !ai_move(computer, board);
          if (quitting) {
-            printf("You have won human. I concede");
+            printf("I have let you win human. Here is your false victory.\n");
          }
       }
 
@@ -397,7 +397,8 @@ struct player *play_sp(struct player *real_human, struct player *computer) {
       printf("%s won! Congratulations\n", winner->name);
    } else if (computer->score > real_human->score) {
       winner = computer;
-      printf("%s won! Try again\n", winner->name);
+      printf("%s won! Feel my superiority human and try again if you dare\n",
+             winner->name);
    } else {
       printf("The game was a draw! No one was added to scoreboard.\n");
       winner = NULL;
