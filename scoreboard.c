@@ -40,10 +40,11 @@ void init_scoreboard(score scores[MAX_SCORES]) {
  * to their score 
  **/
 BOOLEAN add_to_scoreboard(score scores[MAX_SCORES], struct player *winner) {
-   int i,x;
+   int i, x;
    BOOLEAN set_score = FALSE;
 
-/*
+/* OLD Algorithm */
+   /*
    if (winner->score <= scores[MAX_SCORES - ARRAY_OFFSET].score) {
       return FALSE;
    }
@@ -56,8 +57,8 @@ BOOLEAN add_to_scoreboard(score scores[MAX_SCORES], struct player *winner) {
    i = 0;
    while (i < MAX_SCORES && !set_score) {
       if (score_compare(winner, &scores[i]) < 0) {
-         for(x = MAX_SCORES-ARRAY_OFFSET; x > i;x--) {
-            scores[x] = scores[x-ARRAY_OFFSET];
+         for (x = MAX_SCORES - ARRAY_OFFSET; x > i; x--) {
+            scores[x] = scores[x - ARRAY_OFFSET];
          }
          scores[x] = *winner;
          set_score = TRUE;
