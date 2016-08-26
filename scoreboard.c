@@ -37,34 +37,50 @@ void init_scoreboard(score scores[MAX_SCORES]) {
 
 /**
  * insert the top scorer from the last game played in sorted order according
- * to their score 
+ * to their score. If the winner's score is less than the lowest score and
+ * the scoreboard is full, the winner is not added and the method reutns false.
  **/
 BOOLEAN add_to_scoreboard(score scores[MAX_SCORES], struct player *winner) {
    int i, x;
    BOOLEAN set_score = FALSE;
 
-/* OLD Algorithm */
-   /*
+   /* If the last position has a higher score than the winner then don't add
+    * to the array
+    * */
    if (winner->score <= scores[MAX_SCORES - ARRAY_OFFSET].score) {
       return FALSE;
    }
-   scores[MAX_SCORES - ARRAY_OFFSET] = *winner;
-   qsort(scores, MAX_SCORES, sizeof(struct player), score_compare);
+/* OLD Algorithm */
+
+   /* Set the last position in the array to the winner */
+
+   /*scores[MAX_SCORES - ARRAY_OFFSET] = *winner; */
+
+   /* Sort the array */
+
+   /* qsort(scores, MAX_SCORES, sizeof(struct player), score_compare);
    return TRUE;
-*/
+   */
 
 /* More efficient algorithm that doesn't need qsort? */
    i = 0;
+
+   /* Iterate through the array positions */
    while (i < MAX_SCORES && !set_score) {
+      /* If the score is larger then that of the current score shift all the
+       * entries down one array position */
       if (score_compare(winner, &scores[i]) < 0) {
          for (x = MAX_SCORES - ARRAY_OFFSET; x > i; x--) {
             scores[x] = scores[x - ARRAY_OFFSET];
          }
+         /* Then set the winner */
          scores[x] = *winner;
          set_score = TRUE;
       }
       i++;
    }
+   /* If (somehow) there was no position set, return the initial value
+    * of FALSE */
    return set_score;
 
 }

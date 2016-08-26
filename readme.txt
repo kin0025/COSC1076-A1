@@ -18,7 +18,7 @@ One known bug/inconsistency.
      counted towards the string length as it should, however when displayed
      in a formatted printf(%-20s) type function it counts towards width
      without displaying as a character and throws of formatted lines. I was
-     unable to figure out a way of removing these short of massive if
+     unable to figure out a way of removing these short of massive if or switch
      statements iterating over the input strings (one condition per
      undesirable character) , so the slight visual inconsistency is left in.
 
@@ -42,11 +42,11 @@ Users will also be notified if there are no possible moves.
 An extra display feature was added that displays what squares are valid 
 moves, it is activated by changing DISPLAY_MARKERS to TRUE in shared.h
 
-I have designed the program so the current player will be the first player
-passed to the program, as opposed to players always been passed in the same
-position. This it to make it easier to see the current player when the board
-is displayed, and to allow move markers to be printed based upon this 
-assumption
+I have designed the display_board function so the current player will be the
+first player passed to the function, as opposed to players always been passed
+in the same position. This it to make it easier to see the current player
+when the board is displayed, and to allow move markers to be printed based
+upon this assumption (if enabled)
 
 A Singleplayer mode was added where one player is a computer. This is
 entirely contained in the end of game.c (functional splitting be dammed) and
